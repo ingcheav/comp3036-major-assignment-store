@@ -6,6 +6,7 @@ node_modules
 .pnp.js
 .auth
 dev.db
+*.db
 
 # Local env files
 .env
@@ -42,3 +43,11 @@ yarn-error.log*
 *storybook.log
 
 __screenshots__
+
+# Build outputs
+apps/store/tsconfig.tsbuildinfo
+apps/store/playwright-report/
+
+# Database
+apps/store/prisma/dev.db
+packages/db/prisma/dev.db
