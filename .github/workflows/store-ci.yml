@@ -1,0 +1,72 @@
+name: Store CI
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "apps/store/**"
+      - ".github/workflows/store-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/store/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: "file:./dev.db"
+      NEXTAUTH_SECRET: "ci-test-secret-do-not-use-in-prod"
+      NEXTAUTH_URL: "http://localhost:3003"
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.2.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Prisma client
+        working-directory: apps/store
+        run: pnpm db:generate
+
+      - name: Push DB schema
+        working-directory: apps/store
+        run: pnpm db:push
+
+      - name: Seed database
+        working-directory: apps/store
+        run: pnpm db:seed
+
+      - name: Build store
+        run: pnpm store:build
+
+      - name: Install Playwright browsers
+        working-directory: apps/store
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run E2E tests
+        run: pnpm store:test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: store-playwright-report
+          path: apps/store/playwright-report/
+          retention-days: 7
