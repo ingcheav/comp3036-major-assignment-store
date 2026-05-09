@@ -13,6 +13,7 @@
     "predev": "pnpm db:generate",
     "postinstall": "pnpm db:generate",
     "studio": "prisma studio",
+    "db:seed": "tsx src/run-seed.ts",
     "dev": "tsc --watch",
     "build": "tsc"
   },
@@ -38,6 +39,7 @@
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
     "@types/node": "^22.13.1",
+    "tsx": "^4.19.2",
     "vitest": "^3.0.4"
   }
 }
