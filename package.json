@@ -6,9 +6,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "store:dev": "turbo dev --filter=store",
-    "store:build": "turbo build --filter=store",
-    "store:test": "turbo test --filter=store"
+    "store:dev": "turbo dev --filter=@repo/store",
+    "store:build": "turbo build --filter=@repo/store",
+    "store:test": "turbo test --filter=@repo/store"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
