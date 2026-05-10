@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       include: { product: true },
     });
 
-    const total = cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+    const total = cartItems.reduce((sum: number, i) => sum + i.product.price * i.quantity, 0);
 
     await prisma.order.create({
       data: {
