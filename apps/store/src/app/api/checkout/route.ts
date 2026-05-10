@@ -18,7 +18,14 @@ export async function POST() {
     return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
   }
 
-  const lineItems = cartItems.map((item) => ({
+  const lineItems = cartItems.map((item: {
+    quantity: number;
+    product: {
+      name: string;
+      price: number;
+      imageUrl: string | null;
+    };
+  }) => ({
     price_data: {
       currency: "aud",
       product_data: {

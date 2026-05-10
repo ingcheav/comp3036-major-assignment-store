@@ -67,7 +67,7 @@ jobs:
         run: pnpm --filter @repo/store exec playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: pnpm turbo test --filter=@repo/store
+        run: pnpm store:test
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
