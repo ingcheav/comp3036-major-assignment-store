@@ -97,8 +97,10 @@ export default function CartPage() {
                         <button onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           className="w-8 h-8 rounded-lg border border-gray-200 hover:bg-gray-50 font-medium text-sm">−</button>
                         <span className="w-8 text-center font-medium text-sm">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 rounded-lg border border-gray-200 hover:bg-gray-50 font-medium text-sm">+</button>
+                        <button
+                          onClick={() => { if (item.quantity >= item.product.stock) return; updateQuantity(item.id, item.quantity + 1); }}
+                          disabled={item.quantity >= item.product.stock}
+                          className="w-8 h-8 rounded-lg border border-gray-200 hover:bg-gray-50 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed">+</button>
                       </div>
                       <button onClick={() => removeItem(item.id)} className="text-xs text-red-500 hover:underline">
                         Remove

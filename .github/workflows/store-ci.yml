@@ -2,7 +2,7 @@ name: Store CI
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, store-branch]
     paths:
       - "apps/store/**"
       - ".github/workflows/store-ci.yml"
@@ -15,8 +15,18 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: electromart
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     env:
-      DATABASE_URL: "file:./dev.db"
+      DATABASE_URL: "postgresql://ci:ci@localhost:5432/electromart"
       NEXTAUTH_SECRET: "ci-test-secret-do-not-use-in-prod"
       NEXTAUTH_URL: "http://localhost:3003"
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}

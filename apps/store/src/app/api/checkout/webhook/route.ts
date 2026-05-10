@@ -43,6 +43,15 @@ export async function POST(req: NextRequest) {
     });
 
     await prisma.cartItem.deleteMany({ where: { userId } });
+
+    await Promise.all(
+      cartItems.map((item) =>
+        prisma.product.update({
+          where: { id: item.productId },
+          data: { stock: { decrement: item.quantity } },
+        })
+      )
+    );
   }
 
   return NextResponse.json({ ok: true });
