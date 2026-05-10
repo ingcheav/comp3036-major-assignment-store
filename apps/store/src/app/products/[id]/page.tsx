@@ -14,6 +14,7 @@ interface Product {
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
@@ -66,7 +67,16 @@ export default function ProductPage() {
 
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-              {product.stock === 0 ? (
+              {isAdmin ? (
+                
+                <span className="text-sm font-medium text-gray-600 flex items-center gap-1">
+                  Stock:
+                  <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold">
+                    {product.stock} units
+                  </span>
+                </span>
+
+              ) : product.stock === 0 ? (
                 <span className="inline-flex items-center gap-1.5 bg-red-50 text-red-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-red-200">
                   <span className="w-1.5 h-1.5 bg-red-500 rounded-full" />
                   Out of Stock
