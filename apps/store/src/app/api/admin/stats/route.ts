@@ -16,7 +16,9 @@ export async function GET() {
     prisma.user.count(),
   ]);
 
-  const revenue = orders.filter((o) => o.status === "PAID").reduce((s, o) => s + o.total, 0);
+  const revenue = (orders as { status: string; total: number }[])
+    .filter((o) => o.status === "PAID")
+    .reduce((s, o) => s + o.total, 0);
 
   return NextResponse.json({ products, orders: orders.length, revenue, users });
 }
