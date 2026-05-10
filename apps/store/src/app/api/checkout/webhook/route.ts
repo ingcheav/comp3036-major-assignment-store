@@ -2,7 +2,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import Stripe from "stripe";
+
+type CartItemWithProduct = Prisma.CartItemGetPayload<{
+  include: { product: true };
+}>;
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -20,12 +25,12 @@ export async function POST(req: NextRequest) {
     const userId = session.metadata?.userId;
     if (!userId) return NextResponse.json({ ok: true });
 
-    const cartItems = await prisma.cartItem.findMany({
+    const cartItems: CartItemWithProduct[] = await prisma.cartItem.findMany({
       where: { userId },
       include: { product: true },
     });
 
-    const total = cartItems.reduce((sum: number, i) => sum + i.product.price * i.quantity, 0);
+    const total = cartItems.reduce((sum: number, i: CartItemWithProduct) => sum + i.product.price * i.quantity, 0);
 
     await prisma.order.create({
       data: {
