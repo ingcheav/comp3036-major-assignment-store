@@ -2,12 +2,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 import Stripe from "stripe";
 
-type CartItemWithProduct = Prisma.CartItemGetPayload<{
-  include: { product: true };
-}>;
+type CartItemWithProduct = {
+  id: string;
+  userId: string;
+  productId: string;
+  quantity: number;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    imageUrl: string | null;
+    stock: number;
+  };
+};
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
