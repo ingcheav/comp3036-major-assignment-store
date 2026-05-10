@@ -40,15 +40,36 @@ export default function CartPage() {
     setItems((prev) => prev.filter((i) => i.id !== id));
   }
 
-  async function checkout() {
+  async function handleCheckout() {
     setCheckingOut(true);
-    const res = await fetch("/api/checkout", { method: "POST" });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else setCheckingOut(false);
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const text = await res.text();
+      if (!text) {
+        console.error("Empty response from checkout API");
+        setCheckingOut(false);
+        return;
+      }
+      const data = JSON.parse(text);
+      if (!res.ok) {
+        console.error("Checkout error:", data.error);
+        setCheckingOut(false);
+        return;
+      }
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setCheckingOut(false);
+      }
+    } catch (err) {
+      console.error("Checkout failed:", err);
+      setCheckingOut(false);
+    }
   }
 
   const total = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
+  const uniqueProducts = items.length;
 
   if (loading) return <div className="flex justify-center py-16"><div className="animate-spin text-3xl">⚙️</div></div>;
 
@@ -117,7 +138,7 @@ export default function CartPage() {
             <h2 className="font-semibold text-lg mb-4 text-gray-900">Order Summary</h2>
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Subtotal ({items.length} item{items.length !== 1 ? "s" : ""})</span>
+                <span>Subtotal ({totalQuantity} {totalQuantity === 1 ? "item" : "items"})</span>
                 <span>${total.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-gray-600">
@@ -129,7 +150,7 @@ export default function CartPage() {
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
             </div>
-            <button onClick={checkout} disabled={checkingOut} className="btn-primary w-full py-3" data-testid="checkout-btn">
+            <button onClick={handleCheckout} disabled={checkingOut} className="btn-primary w-full py-3" data-testid="checkout-btn">
               {checkingOut ? "Redirecting…" : "Proceed to Checkout"}
             </button>
             <p className="text-center text-xs text-gray-400 mt-3">Secure checkout powered by Stripe</p>

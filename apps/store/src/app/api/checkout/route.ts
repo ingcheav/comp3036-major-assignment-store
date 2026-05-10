@@ -30,14 +30,21 @@ export async function POST() {
     quantity: item.quantity,
   }));
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: lineItems,
-    mode: "payment",
-    success_url: `${process.env.NEXTAUTH_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
-    metadata: { userId: session.user.id },
-  });
-
-  return NextResponse.json({ url: checkoutSession.url });
+  try {
+    const checkoutSession = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: `${process.env.NEXTAUTH_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
+      metadata: { userId: session.user.id },
+    });
+    return NextResponse.json({ url: checkoutSession.url });
+  } catch (error: any) {
+    console.error("Stripe error:", error);
+    return NextResponse.json(
+      { error: error.message || "Checkout failed" },
+      { status: 500 }
+    );
+  }
 }
