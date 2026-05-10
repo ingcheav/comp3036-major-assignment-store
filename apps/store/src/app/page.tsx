@@ -10,9 +10,7 @@ export default function HomePage() {
         <h1 className="text-3xl font-bold mb-2">Premium Electronics</h1>
         <p className="text-gray-300 text-lg">Laptops, phones, audio and more — shipped fast.</p>
       </div>
-
         <ProductGrid />
-
     </div>
   );
 }
