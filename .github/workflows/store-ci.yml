@@ -2,7 +2,7 @@ name: Store CI
 
 on:
   push:
-    branches: [main, dev, store-branch]
+    branches: [main, dev, store-branch, store-fixing-with-test]
     paths:
       - "apps/store/**"
       - ".github/workflows/store-ci.yml"
