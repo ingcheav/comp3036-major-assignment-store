@@ -52,26 +52,22 @@ jobs:
         run: pnpm install
 
       - name: Generate Prisma client
-        working-directory: apps/store
-        run: pnpm db:generate
+        run: pnpm --filter @repo/store db:generate
 
       - name: Push DB schema
-        working-directory: apps/store
-        run: pnpm db:push
+        run: pnpm --filter @repo/store db:push
 
       - name: Seed database
-        working-directory: apps/store
-        run: pnpm db:seed
+        run: pnpm --filter @repo/store db:seed
 
       - name: Build store
-        run: pnpm store:build
+        run: pnpm turbo build --filter=@repo/store
 
       - name: Install Playwright browsers
-        working-directory: apps/store
-        run: pnpm exec playwright install chromium --with-deps
+        run: pnpm --filter @repo/store exec playwright install chromium --with-deps
 
       - name: Run E2E tests
-        run: pnpm store:test
+        run: pnpm turbo test --filter=@repo/store
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
