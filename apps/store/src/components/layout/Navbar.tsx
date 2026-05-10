@@ -1,5 +1,4 @@
 "use client";
-// src/components/layout/Navbar.tsx
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -10,7 +9,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (session?.user) {
+    if (session?.user && session.user.role !== "ADMIN") {
       fetch("/api/cart")
         .then((r) => r.json())
         .then((data) => setCartCount(data.items?.length ?? 0))
@@ -19,6 +18,11 @@ export function Navbar() {
       setCartCount(0);
     }
   }, [session]);
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    await signOut({ callbackUrl: "/login" });
+  }
 
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
@@ -32,7 +36,7 @@ export function Navbar() {
           {/* Center nav — desktop */}
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
             <Link href="/" className="hover:text-[#1167b1] transition-colors">Shop</Link>
-            {session?.user.role === "ADMIN" && (
+            {session?.user?.role === "ADMIN" && (
               <Link href="/admin" className="hover:text-[#1167b1] transition-colors">Admin</Link>
             )}
           </div>
@@ -41,7 +45,11 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {session?.user ? (
               <>
+                {/* Guest: Sign in + Register */}
                 <Link href="/orders" className="text-sm text-gray-600 hover:text-[#1167b1]">Orders</Link>
+                {session.user.role !== "ADMIN" && (
+                  <Link href="/profile" className="text-sm text-gray-600 hover:text-[#1167b1]">Profile</Link>
+                )}
                 {session.user.role !== "ADMIN" && (
                   <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
                     <span className="text-lg">🛒</span>
@@ -52,10 +60,7 @@ export function Navbar() {
                     )}
                   </Link>
                 )}
-                <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="btn-secondary text-sm"
-                >
+                <button onClick={handleLogout} className="btn-secondary text-sm">
                   Sign out
                 </button>
               </>
@@ -108,7 +113,7 @@ export function Navbar() {
           >
             Shop
           </Link>
-          {session?.user && (
+          {session?.user ? (
             <>
               <Link
                 href="/orders"
@@ -117,6 +122,15 @@ export function Navbar() {
               >
                 Orders
               </Link>
+              {session.user.role !== "ADMIN" && (
+                <Link
+                  href="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className="block px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#1167b1] transition-colors"
+                >
+                  Profile
+                </Link>
+              )}
               {session.user.role === "ADMIN" && (
                 <Link
                   href="/admin"
@@ -128,15 +142,14 @@ export function Navbar() {
               )}
               <div className="pt-2 mt-1 border-t border-gray-100">
                 <button
-                  onClick={() => { setMenuOpen(false); signOut({ callbackUrl: "/" }); }}
+                  onClick={() => { setMenuOpen(false); handleLogout(); }}
                   className="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#1167b1] transition-colors"
                 >
                   Sign out
                 </button>
               </div>
             </>
-          )}
-          {!session?.user && (
+          ) : (
             <div className="flex gap-2 pt-2 mt-1 border-t border-gray-100">
               <Link
                 href="/login"
