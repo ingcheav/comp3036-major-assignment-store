@@ -1,13 +1,12 @@
 {
-  "name": "@repo/store",
+  "name": "electromart",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3003",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3003",
+    "start": "next start",
     "lint": "next lint",
-    "check-types": "tsc --noEmit",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "db:push": "prisma db push",

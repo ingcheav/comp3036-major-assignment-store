@@ -9,15 +9,15 @@ export default defineConfig({
   workers: 1,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:3003",
+    baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
-    command: "pnpm dev",
-    url: "http://localhost:3003",
+    command: "npm run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
