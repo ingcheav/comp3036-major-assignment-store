@@ -42,8 +42,7 @@ export async function POST() {
       metadata: { userId: session.user.id },
     });
     return NextResponse.json({ url: checkoutSession.url });
-  } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : "Checkout failed";
-    return NextResponse.json({ error: msg }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Checkout failed" }, { status: 500 });
   }
 }
