@@ -66,7 +66,7 @@ export default function OrdersPage() {
                   <p className="font-bold text-lg mt-1">${order.total.toFixed(2)}</p>
                 </div>
               </div>
-              <div className="border-t border-gray-100 pt-4 space-y-2">
+              <div className="border-t border-gray-100 pt-4 space-y-2" data-testid="order-details">
                 {order.orderItems.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-gray-700">{item.product.name} × {item.quantity}</span>
