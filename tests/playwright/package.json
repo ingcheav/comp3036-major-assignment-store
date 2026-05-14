@@ -1,0 +1,25 @@
+{
+  "name": "@repo/playwright",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start:web": "pnpm --filter @repo/web start",
+    "start:admin": "pnpm --filter @repo/admin start",
+    "test": "playwright test",
+    "test-1": "playwright test tests/web",
+    "test-2": "playwright test tests/admin",
+    "ui": "playwright test --ui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.7.9"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.50.0",
+    "@repo/db": "workspace:*",
+    "dotenv": "^16.4.5"
+  }
+}
