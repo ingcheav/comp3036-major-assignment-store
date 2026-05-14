@@ -9,10 +9,10 @@ interface Product {
 }
 
 const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "name_asc", label: "A–Z" },
-  { value: "name_desc", label: "Z–A" },
+  { value: "newest", label: "Newest-Oldest" },
+  { value: "oldest", label: "Oldest-Newest" },
+  { value: "name_asc", label: "Title: A–Z" },
+  { value: "name_desc", label: "Title: Z–A" },
   { value: "price_asc", label: "Price: Low–High" },
   { value: "price_desc", label: "Price: High–Low" },
 ];
@@ -22,7 +22,7 @@ export function ProductGrid() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(true);
@@ -84,11 +84,15 @@ export function ProductGrid() {
           className="input cursor-pointer bg-white"
           data-testid="sort-filter"
         >
+          <option value="" disabled>
+            Sort by
+          </option>
           {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
 
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <span className="text-sm font-medium text-slate-600 sm:mr-2">Price Range</span>
         <input
           type="number"
           placeholder="Min Price"

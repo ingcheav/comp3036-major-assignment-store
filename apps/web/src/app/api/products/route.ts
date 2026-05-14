@@ -34,13 +34,16 @@ export async function GET(req: NextRequest) {
     }),
   };
 
-  const products = await prisma.product.findMany({
-    where,
-    include: { category: true },
-    orderBy,
-  });
-
-  return NextResponse.json(products);
+  try {
+    const products = await prisma.product.findMany({
+      where,
+      include: { category: true },
+      orderBy,
+    });
+    return NextResponse.json(products);
+  } catch {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {

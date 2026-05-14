@@ -26,11 +26,7 @@ export function Navbar() {
             </span>
           </Link>
 
-          <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 text-sm font-medium text-white/70 shadow-sm md:flex">
-            <Link href="/" className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white">Shop</Link>
-          </div>
-
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="ml-auto hidden items-center gap-3 md:flex">
             {session?.user ? (
               <>
                 <Link href="/orders" className="text-sm font-medium text-white/70 transition-colors hover:text-white">Orders</Link>
@@ -49,7 +45,12 @@ export function Navbar() {
                 )}
                 <button onClick={handleLogout} className="btn-secondary text-sm">Sign out</button>
               </>
-            ) : null}
+            ) : (
+              <>
+                <Link href="/login" className="btn-secondary text-sm">Sign in</Link>
+                <Link href="/register" className="btn-primary text-sm">Register</Link>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-1 md:hidden">
@@ -84,10 +85,6 @@ export function Navbar() {
 
       {menuOpen && (
         <div className="border-t border-white/10 bg-[#031b34]/98 px-4 py-3 shadow-lg shadow-slate-900/20 md:hidden">
-          <Link href="/" onClick={() => setMenuOpen(false)}
-            className="block rounded-2xl px-3 py-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white">
-            Shop
-          </Link>
           {session?.user ? (
             <>
               <Link href="/orders" onClick={() => setMenuOpen(false)}
@@ -107,7 +104,16 @@ export function Navbar() {
                 </button>
               </div>
             </>
-          ) : null}
+          ) : (
+            <div className="flex flex-col gap-2">
+              <Link href="/login" onClick={() => setMenuOpen(false)} className="btn-secondary w-full text-sm">
+                Sign in
+              </Link>
+              <Link href="/register" onClick={() => setMenuOpen(false)} className="btn-primary w-full text-sm">
+                Register
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </nav>

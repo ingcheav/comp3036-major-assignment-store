@@ -22,7 +22,7 @@ export function AdminNavbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#031b34]/92 text-white shadow-[0_16px_50px_-28px_rgba(3,37,76,0.9)] backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#031b34] text-white shadow-[0_16px_50px_-28px_rgba(3,37,76,0.95)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between gap-4">
           <div className="flex items-center gap-8">
@@ -33,7 +33,7 @@ export function AdminNavbar() {
                 <span className="block text-xs uppercase tracking-[0.22em] text-white/50">Operations console</span>
               </span>
             </Link>
-            <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 md:flex">
+            <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/8 p-1 md:flex">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -55,7 +55,7 @@ export function AdminNavbar() {
               <span className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white/70 sm:block">{session.user.email}</span>
               <button
                 onClick={handleLogout}
-                className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-white/20"
+                className="rounded-full border border-white/10 bg-white/12 px-4 py-2 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-white/20"
               >
                 Sign out
               </button>

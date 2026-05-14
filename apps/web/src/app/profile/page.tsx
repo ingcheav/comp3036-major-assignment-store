@@ -47,8 +47,8 @@ export default function ProfilePage() {
             {profile.name?.[0]?.toUpperCase() ?? "U"}
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">{profile.name}</h2>
-            <p className="text-sm text-gray-500">{profile.email}</p>
+            <h2 data-testid="user-name" className="text-xl font-bold text-gray-900">{profile.name}</h2>
+            <p data-testid="user-email" className="text-sm text-gray-500">{profile.email}</p>
           </div>
         </div>
 

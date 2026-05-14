@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:generate": "prisma generate --schema=../../packages/db/prisma/schema.prisma",
     "test:unit": "vitest run tests",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "test": "vitest run tests"
   },
   "dependencies": {
     "@prisma/client": "^6.3.1",

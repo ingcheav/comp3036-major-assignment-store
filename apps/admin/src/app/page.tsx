@@ -45,9 +45,9 @@ export default function AdminDashboard() {
 
       <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
-          <div key={card.label} className="card p-6 hover:-translate-y-1">
+          <div key={card.label} data-testid="stat-card" className="card p-6 hover:-translate-y-1">
             <p className="text-3xl mb-3">{card.icon}</p>
-            <p className="text-2xl font-semibold tracking-tight text-slate-900">{card.value}</p>
+            <p data-testid="stat-value" className="text-2xl font-semibold tracking-tight text-slate-900">{card.value}</p>
             <p className="mt-1 text-sm text-slate-500">{card.label}</p>
             {card.href && (
               <Link href={card.href} className="mt-3 inline-block text-xs font-semibold uppercase tracking-[0.18em] text-[#1167b1] hover:text-[#03254c]">

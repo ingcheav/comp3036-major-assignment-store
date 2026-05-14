@@ -9,13 +9,10 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  try {
-    const orders = await prisma.order.findMany({
-      include: { user: true, orderItems: { include: { product: true } } },
-      orderBy: { createdAt: "desc" },
-    });
-    return NextResponse.json(orders);
-  } catch {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+  const products = await prisma.product.findMany({
+    include: { category: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json(products);
 }

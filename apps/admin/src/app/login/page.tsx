@@ -36,38 +36,38 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gray-50">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <span className="text-2xl font-bold text-[#03254c]">⚡ ElectroMart Admin</span>
+    <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-10">
+      <div className="w-full max-w-sm rounded-[1.75rem] border border-white/55 bg-white/60 p-7 shadow-[0_28px_80px_-45px_rgba(15,23,42,0.42)] backdrop-blur-md">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#03254c] text-2xl text-white shadow-lg shadow-[#03254c]/20">⚡</div>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">ElectroMart Admin</h1>
         </div>
 
-        <div className="card p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Admin Sign in</h1>
-          <p className="text-sm text-gray-500 mb-6">Restricted to administrators only.</p>
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm mb-4">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email" required className="input" value={email}
-                onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input type="password" required className="input" value={password}
-                onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <button type="submit" disabled={loading} className="btn-primary w-full py-2.5">
-              {loading ? "Signing in…" : "Sign in"}
-            </button>
-          </form>
+        <div className="mb-5 rounded-2xl border border-amber-300 bg-amber-100 px-4 py-3 text-center shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-900">Restricted to administrators only</p>
         </div>
+
+        {error && (
+          <div data-testid="error-message" className="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
+            <input data-testid="email-input" type="email" required className="input" value={email}
+              onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
+            <input data-testid="password-input" type="password" required className="input" value={password}
+              onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <button data-testid="login-btn" type="submit" disabled={loading} className="btn-primary w-full py-3">
+            {loading ? "Signing in…" : "Sign in"}
+          </button>
+        </form>
       </div>
     </div>
   );

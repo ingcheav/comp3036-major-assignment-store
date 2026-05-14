@@ -11,10 +11,10 @@ interface Product {
 }
 
 const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "name_asc", label: "A–Z" },
-  { value: "name_desc", label: "Z–A" },
+  { value: "newest", label: "Newest-Oldest" },
+  { value: "oldest", label: "Oldest-Newest" },
+  { value: "name_asc", label: "Title: A–Z" },
+  { value: "name_desc", label: "Title: Z–A" },
   { value: "price_asc", label: "Price: Low–High" },
   { value: "price_desc", label: "Price: High–Low" },
 ];
@@ -34,7 +34,7 @@ export default function AdminPreviewPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(true);
@@ -62,10 +62,15 @@ export default function AdminPreviewPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-[#03254c] rounded-2xl p-8 mb-8 text-white">
-        <h1 className="text-3xl font-bold mb-1">Store Preview</h1>
-        <p className="text-gray-300">Read-only view of the customer-facing store. Click Edit to manage a product.</p>
-      </div>
+      <section className="section-shell mb-6 overflow-hidden bg-[linear-gradient(135deg,rgba(3,37,76,0.98),rgba(8,58,103,0.94)_55%,rgba(17,90,152,0.84))] text-white shadow-[0_22px_60px_-36px_rgba(3,37,76,0.6)]">
+        <div className="grid gap-4 lg:items-center">
+          <div className="space-y-2">
+            <span className="eyebrow border-white/15 bg-white/10 text-white/90">Store preview</span>
+            <h1 className="max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl">Store Preview</h1>
+            <p className="max-w-2xl text-sm leading-6 text-white/78">Read-only view of the customer-facing store. Click Edit to manage a product.</p>
+          </div>
+        </div>
+      </section>
 
       {/* Search + Sort row */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -79,14 +84,16 @@ export default function AdminPreviewPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="input sm:w-52 bg-white cursor-pointer"
+          className="input sm:w-52 cursor-pointer bg-white"
         >
+          <option value="" disabled>Sort by</option>
           {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
 
       {/* Price filter row */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4 items-center">
+        <label className="text-sm font-medium text-gray-700">Price Range:</label>
         <input
           type="number"
           placeholder="Min Price"

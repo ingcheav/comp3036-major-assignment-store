@@ -8,31 +8,31 @@ export async function POST() {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const cartItems = await prisma.cartItem.findMany({
-    where: { userId: session.user.id },
-    include: { product: true },
-  });
-
-  if (cartItems.length === 0) {
-    return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
-  }
-
-  const lineItems = cartItems.map((item: {
-    quantity: number;
-    product: { name: string; price: number; imageUrl: string | null };
-  }) => ({
-    price_data: {
-      currency: "aud",
-      product_data: {
-        name: item.product.name,
-        images: item.product.imageUrl ? [item.product.imageUrl] : [],
-      },
-      unit_amount: Math.round(item.product.price * 100),
-    },
-    quantity: item.quantity,
-  }));
-
   try {
+    const cartItems = await prisma.cartItem.findMany({
+      where: { userId: session.user.id },
+      include: { product: true },
+    });
+
+    if (cartItems.length === 0) {
+      return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
+    }
+
+    const lineItems = cartItems.map((item: {
+      quantity: number;
+      product: { name: string; price: number; imageUrl: string | null };
+    }) => ({
+      price_data: {
+        currency: "aud",
+        product_data: {
+          name: item.product.name,
+          images: item.product.imageUrl ? [item.product.imageUrl] : [],
+        },
+        unit_amount: Math.round(item.product.price * 100),
+      },
+      quantity: item.quantity,
+    }));
+
     const checkoutSession = await getStripe().checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,

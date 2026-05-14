@@ -66,7 +66,9 @@ export default function CartPage() {
     <div className="max-w-4xl mx-auto px-4 py-10">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold">Shopping Cart</h1>
-        <Link href="/" className="text-sm text-[#1167b1] hover:underline">← Continue Shopping</Link>
+        <Link href="/" className="btn-secondary px-4 py-2.5 text-sm">
+          ← Continue Shopping
+        </Link>
       </div>
 
       {items.length === 0 ? (
@@ -128,7 +130,7 @@ export default function CartPage() {
                 <span className="text-green-600 font-medium">Free</span>
               </div>
             </div>
-            <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between font-bold text-lg text-gray-900 mb-6">
+            <div data-testid="cart-total" className="border-t border-gray-200 pt-4 mt-4 flex justify-between font-bold text-lg text-gray-900 mb-6">
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
             </div>

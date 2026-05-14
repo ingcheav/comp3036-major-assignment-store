@@ -53,7 +53,7 @@ export default function AdminOrdersPage() {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="card p-6">
+            <div key={order.id} className="card p-6" data-testid="order-row">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <p className="font-medium">#{order.id.slice(-8).toUpperCase()}</p>

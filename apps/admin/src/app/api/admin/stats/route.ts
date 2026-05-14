@@ -9,15 +9,19 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const [products, orders, users] = await Promise.all([
-    prisma.product.count(),
-    prisma.order.findMany({ select: { total: true, status: true } }),
-    prisma.user.count(),
-  ]);
+  try {
+    const [products, orders, users] = await Promise.all([
+      prisma.product.count(),
+      prisma.order.findMany({ select: { total: true, status: true } }),
+      prisma.user.count(),
+    ]);
 
-  const revenue = (orders as { status: string; total: number }[])
-    .filter((o) => o.status === "PAID")
-    .reduce((s, o) => s + o.total, 0);
+    const revenue = orders
+      .filter((o) => o.status === "PAID")
+      .reduce((s, o) => s + o.total, 0);
 
-  return NextResponse.json({ products, orders: orders.length, revenue, users });
+    return NextResponse.json({ products, orders: orders.length, revenue, users });
+  } catch {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

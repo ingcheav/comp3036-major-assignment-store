@@ -15,9 +15,9 @@
   body {
     @apply antialiased text-gray-900;
     background:
-      radial-gradient(circle at top left, rgba(3, 37, 76, 0.12), transparent 28%),
-      radial-gradient(circle at top right, rgba(17, 103, 177, 0.08), transparent 24%),
-      linear-gradient(180deg, #f7faff 0%, #edf3fa 100%);
+      radial-gradient(circle at top left, rgba(3, 37, 76, 0.22), transparent 28%),
+      radial-gradient(circle at top right, rgba(17, 103, 177, 0.16), transparent 24%),
+      linear-gradient(180deg, #eef4fb 0%, #dbe6f4 100%);
   }
 
   ::selection {

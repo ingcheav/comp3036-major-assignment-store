@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import { prisma } from "@/lib/prisma";
+import { finalizeCheckout } from "@/lib/checkout";
 import { CartReset } from "@/components/CartReset";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -20,39 +20,7 @@ export default async function SuccessPage({
     const userId = stripeSession.metadata?.userId;
 
     if (userId) {
-      const existing = await prisma.order.findFirst({
-        where: { stripeSessionId: session_id } as any,
-      });
-
-      if (!existing) {
-        const cartItems = await prisma.cartItem.findMany({
-          where: { userId },
-          include: { product: true },
-        });
-
-        if (cartItems.length > 0) {
-          await prisma.order.create({
-            data: {
-              userId,
-              stripeSessionId: session_id,
-              total: cartItems.reduce(
-                (sum, i) => sum + i.product.price * i.quantity,
-                0
-              ),
-              status: "PAID",
-              orderItems: {
-                create: cartItems.map((i) => ({
-                  productId: i.productId,
-                  quantity: i.quantity,
-                  price: i.product.price,
-                })),
-              },
-            } as any,
-          });
-
-          await prisma.cartItem.deleteMany({ where: { userId } });
-        }
-      }
+      await finalizeCheckout(userId, stripeSession.id);
     }
   }
 

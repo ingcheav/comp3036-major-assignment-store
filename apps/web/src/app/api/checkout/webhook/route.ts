@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { prisma } from "@/lib/prisma";
+import { finalizeCheckout } from "@/lib/checkout";
 import Stripe from "stripe";
-
-type CartItemWithProduct = {
-  id: string;
-  userId: string;
-  productId: string;
-  quantity: number;
-  product: { id: string; name: string; price: number; imageUrl: string | null; stock: number };
-};
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -27,38 +19,7 @@ export async function POST(req: NextRequest) {
     const userId = session.metadata?.userId;
     if (!userId) return NextResponse.json({ ok: true });
 
-    const cartItems: CartItemWithProduct[] = await prisma.cartItem.findMany({
-      where: { userId },
-      include: { product: true },
-    });
-
-    const total = cartItems.reduce((sum: number, i: CartItemWithProduct) => sum + i.product.price * i.quantity, 0);
-
-    await prisma.order.create({
-      data: {
-        userId,
-        total,
-        status: "PAID",
-        orderItems: {
-          create: cartItems.map((i) => ({
-            productId: i.productId,
-            quantity: i.quantity,
-            price: i.product.price,
-          })),
-        },
-      },
-    });
-
-    await prisma.cartItem.deleteMany({ where: { userId } });
-
-    await Promise.all(
-      cartItems.map((item) =>
-        prisma.product.update({
-          where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } },
-        })
-      )
-    );
+    await finalizeCheckout(userId, session.id);
   }
 
   return NextResponse.json({ received: true });

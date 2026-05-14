@@ -52,13 +52,8 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         </Link>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/70 pt-4">
-          <span className="text-xl font-semibold tracking-tight text-slate-900">${product.price.toFixed(2)}</span>
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            {product.category.name}
-          </span>
-        </div>
-        <div className="px-4 pb-4 sm:px-5">
+        <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-200/70 pt-4">
+          <span data-testid="product-price" className="text-xl font-semibold tracking-tight text-slate-900">${product.price.toFixed(2)}</span>
           {session?.user?.role !== "ADMIN" && (
             product.stock === 0 ? (
               <span className="rounded-full bg-rose-50 px-3 py-1 text-sm font-medium text-rose-600">Out of stock</span>
