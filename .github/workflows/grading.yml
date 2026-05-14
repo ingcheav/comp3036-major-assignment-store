@@ -9,8 +9,6 @@ permissions:
 jobs:
   run-autograding-tests:
     env:
-      # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
-      # in GitHub repo → Settings → Secrets → Actions
       E2E: true
       CI: true
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/electromart
@@ -20,9 +18,6 @@ jobs:
       JWT_SECRET: secret
       NEXTAUTH_SECRET: "electromart-ci-secret-2026"
       NEXTAUTH_URL: http://127.0.0.1:3001/
-      # VERCEL_URL: http://127.0.0.1:3001/
-      #TURBO_TOKEN: ${{secrets.TURBO_TOKEN}}
-      #TURBO_TEAM: team_FXFYQlL6HSM7CAamFdBZ5A6x
       SKIP_ENV_VALIDATION: true
     runs-on: ubuntu-latest
     services:
@@ -58,6 +53,9 @@ jobs:
         run: pnpm install
       - name: Install Playwright Browsers
         working-directory: tests/playwright
+        run: pnpm playwright install chromium --with-deps
+      - name: Install Playwright Browsers for UI
+        working-directory: packages/ui
         run: pnpm playwright install chromium --with-deps
       - name: Push Database 📦
         run: pnpm --filter @repo/db db:push
