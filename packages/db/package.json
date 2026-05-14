@@ -1,0 +1,46 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "lint": "eslint . --max-warnings 0",
+    "prebuild": "pnpm db:generate",
+    "predev": "pnpm db:generate",
+    "postinstall": "pnpm db:generate",
+    "studio": "prisma studio",
+    "db:seed": "tsx src/run-seed.ts",
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./client": {
+      "types": "./src/client.ts",
+      "default": "./dist/client.js"
+    },
+    "./seed": {
+      "types": "./src/seed.ts",
+      "default": "./dist/seed.js"
+    }
+  },
+  "dependencies": {
+    "@prisma/client": "^6.3.1",
+    "@repo/env": "workspace:*",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.3.1",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.13.1",
+    "prisma": "^6.3.1",
+    "tsx": "^4.19.2",
+    "vitest": "^3.0.4"
+  }
+}
