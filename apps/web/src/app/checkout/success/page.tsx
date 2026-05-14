@@ -4,8 +4,6 @@ import Stripe from "stripe";
 import { finalizeCheckout } from "@/lib/checkout";
 import { CartReset } from "@/components/CartReset";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export default async function SuccessPage({
   searchParams,
 }: {
@@ -14,11 +12,13 @@ export default async function SuccessPage({
   const { session_id } = await searchParams;
   if (!session_id) redirect("/");
 
+  // Only initialize Stripe when this page is actually visited, not at build time
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
   const stripeSession = await stripe.checkout.sessions.retrieve(session_id);
 
   if (stripeSession.payment_status === "paid") {
     const userId = stripeSession.metadata?.userId;
-
     if (userId) {
       await finalizeCheckout(userId, stripeSession.id);
     }
