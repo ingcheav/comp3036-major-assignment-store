@@ -126,7 +126,7 @@ jobs:
         with:
           working-directory: tests/playwright
           test-name: Integration 1 - Storefront
-          command: pnpm test-1
+          command: pnpm playwright install chromium --with-deps && pnpm test-1
           timeout: 10
           max-score: 1
 
@@ -137,7 +137,7 @@ jobs:
         with:
           working-directory: tests/playwright
           test-name: Integration 2 - Admin
-          command: pnpm test-2
+          command: pnpm playwright install chromium --with-deps && pnpm test-2
           timeout: 10
           max-score: 1
 
