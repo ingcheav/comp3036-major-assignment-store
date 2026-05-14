@@ -235,7 +235,7 @@ export async function seed() {
           },
         },
       });
-      console.log("✅ Test order seeded");
+      console.log("✅ Database seeded successfully");
     }
   }
 }
