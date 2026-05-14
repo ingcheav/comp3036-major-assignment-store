@@ -453,7 +453,7 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
 
 ## Iteration Deliverables
 
-### Iteration 1 — Week 12 (Submitted)
+### Iteration 1 — Week 12 
 
 - All 6 core features implemented end-to-end (frontend + backend API routes):
   1. **User Authentication** — register, login, logout, JWT sessions, role-based access (USER/ADMIN)
@@ -484,7 +484,7 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
 **Assignment:** Major Assignment — Option 2 (B2C Store Application)
 **Institution:** Western Sydney University
 
-The monorepo workspace configuration (Turborepo + pnpm setup) was inherited from the course scaffold. All application code was written independently for this assignment — every page, API route, component, authentication layer, database schema, Stripe integration, cart logic, admin dashboard, middleware, and E2E test was designed and implemented from scratch. Most of the original blog-specific code was removed and replaced with the ElectroMart store.
+The monorepo workspace (Turborepo + pnpm) was inherited from the Assignment 2 blog codebase. The original blog code was modified and replaced to build the ElectroMart store — every page, API route, component, authentication layer, database schema, Stripe integration, cart logic, admin dashboard, middleware, and E2E test was written specifically for this assignment.
 
 **Grading breakdown:**
 
