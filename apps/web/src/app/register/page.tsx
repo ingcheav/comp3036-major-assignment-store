@@ -81,7 +81,7 @@ export default function RegisterPage() {
           <p className="pt-1 text-center text-sm text-slate-500">
             Already have an account? <Link href="/login" className="font-medium text-[#1167b1] hover:text-[#03254c]">Sign in</Link>
           </p>
-          <button type="submit" disabled={loading} className="btn-primary w-full py-3">
+          <button type="submit" data-testid="register-btn" disabled={loading} className="btn-primary w-full py-3">
             {loading ? "Creating account…" : "Create account"}
           </button>
         </form>
