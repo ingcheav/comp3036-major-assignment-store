@@ -6,9 +6,12 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "store:dev": "turbo dev --filter=@repo/store",
-    "store:build": "turbo build --filter=@repo/store",
-    "store:test": "turbo test --filter=@repo/store"
+    "start:web": "pnpm --filter @repo/web start",
+    "start:admin": "pnpm --filter @repo/admin start",
+    "web:dev": "turbo dev --filter=@repo/web",
+    "admin:dev": "turbo dev --filter=@repo/admin",
+    "web:test": "turbo test --filter=@repo/web",
+    "admin:test": "turbo test --filter=@repo/admin"
   },
   "devDependencies": {
     "prettier": "^3.4.2",

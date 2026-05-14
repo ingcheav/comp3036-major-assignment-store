@@ -1,12 +1,11 @@
 # COMP3036 Full Stack Development — Major Assignment
 
-The B2C Store application is located in `apps/store` and runs on port 3003.
-The blog application (`apps/web`, `apps/admin`) is the original Assignment 2 
-codebase that this project builds upon.
+ElectroMart is a full B2C electronics store built as the Major Assignment for COMP3036 — Full Stack Development. The monorepo contains two Next.js apps that share a single PostgreSQL database.
 
-## Academic Context
-
-This project was developed as the Major Assignment for COMP3036 — Full Stack Development (Option 2 — B2C Store Application). It is built upon the codebase established in Assignments 2.1, 2.2, and 2.3, which has been significantly modified and extended to implement a full B2C e-commerce platform. The original codebase is understood and can be explained and extended appropriately.
+| App | URL | Role |
+|---|---|---|
+| `apps/web` | http://localhost:3001 | Customer storefront |
+| `apps/admin` | http://localhost:3002 | Store admin panel |
 
 ---
 
@@ -14,22 +13,13 @@ This project was developed as the Major Assignment for COMP3036 — Full Stack D
 
 ```
 apps/
-  admin/     ← Blog admin interface (Assignments 2.1, 2.2, 2.3)
-  web/       ← Blog client application (Assignments 2.1, 2.2, 2.3)
-  store/     ← B2C Electromart store (Major Assignment — Option 2)
+  web/       ← Customer storefront (port 3001)
+  admin/     ← Store admin panel (port 3002)
 packages/
-  db/        ← Shared database connection (Prisma)
-  ui/        ← Shared React component library
+  db/        ← Shared Prisma schema + seed (PostgreSQL)
   utils/     ← Shared utility functions
-  env/       ← Shared environment validation
-  eslint-config/
-  tailwind-config/
-  typescript-config/
 tests/
-  playwright-admin/   ← E2E tests for blog admin
-  playwright-web/     ← E2E tests for blog client
-  storybook/          ← Component development environment
-README.md
+  playwright/  ← E2E tests for both apps
 turbo.json
 package.json
 ```
@@ -38,238 +28,355 @@ package.json
 
 ## Applications
 
-### `apps/web` + `apps/admin` — Blog Application (Assignments 2.1, 2.2, 2.3)
+### `apps/web` — Customer Storefront
 
-A full-stack blog platform built with Next.js 15, React 19, Prisma, and Tailwind CSS.
+Public-facing B2C e-commerce app built with Next.js 14, NextAuth v4, Prisma, Stripe, and Tailwind CSS.
 
-- **apps/web** — Public-facing blog client (port 3001)
-- **apps/admin** — Admin interface for managing posts (port 3002)
+- Product catalogue (browse all, filter by category, view detail)
+- User registration and login (NextAuth credentials + JWT)
+- Shopping cart with quantity controls
+- Stripe Checkout with webhook order fulfilment
+- Order history and user profile page
+- Navy `#03254c` colour scheme
 
-Features implemented across assignments:
-- Blog post listing, detail, search, category, tag, and history views
-- Admin authentication with JWT (httpOnly cookie)
-- Full CRUD for blog posts with Markdown support
-- Server-side data fetching and filtering
-- Like/view tracking per post
-- E2E tests with Playwright + unit tests with Vitest
+### `apps/admin` — Store Admin Panel
 
-### `apps/store` — B2C Electromart Store (Major Assignment — Option 2)
+Restricted interface accessible only to users with the `ADMIN` role.
 
-A full-featured B2C e-commerce platform built with Next.js 14, NextAuth, Prisma, Stripe, and Tailwind CSS.
+- Dashboard with live stats (total products, orders, revenue, registered users)
+- Product management — create, edit, delete, assign category, set stock
+- Order viewer — all orders with customer name and line-item detail
+- Middleware-enforced access control (non-admins redirected to `/login`)
 
-- Runs on port 3003
-- PostgreSQL database via Neon
+---
 
-Features:
-- Product catalogue with search and category filtering
-- User authentication (register/login via NextAuth)
-- Shopping cart (add, remove, view)
-- Stripe checkout with webhook order fulfilment
-- Order history for authenticated users
-- Admin dashboard: product management, order management, revenue stats
-- E2E tests with Playwright
+## Frontend and Backend
+
+### Frontend
+
+- `apps/web` (customer UI)
+- `apps/admin` (admin UI)
+- Next.js App Router + Tailwind CSS
+
+### Backend
+
+- Next.js API routes inside both apps
+- Authentication via NextAuth credentials + JWT
+- Database access via Prisma (`packages/db`)
+- Payments via Stripe webhooks
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Auth | NextAuth v4 (credentials provider + JWT) |
+| Database | PostgreSQL via [Neon](https://neon.tech) |
+| ORM | Prisma 6 |
+| Payments | Stripe Checkout + webhooks |
+| Styling | Tailwind CSS |
+| Monorepo | Turborepo + pnpm workspaces |
+| E2E Tests | Playwright |
+| CI | GitHub Actions |
+
+---
+
+## Database Schema
+
+Defined in `packages/db/prisma/schema.prisma`:
+
+- **User** — id, name, email, password (bcrypt), role (`USER` / `ADMIN`)
+- **Category** — id, name (unique)
+- **Product** — id, name, description, price, stock, imageUrl, categoryId
+- **CartItem** — userId + productId (unique pair), quantity
+- **Order** — userId, total, status (`PENDING` / `PAID`), createdAt
+- **OrderItem** — orderId, productId, quantity, price (snapshot at purchase)
 
 ---
 
 ## Prerequisites
 
-Install pnpm and turbo globally:
+- Node.js ≥ 18
+- pnpm 10
 
 ```bash
 npm install -g pnpm
-pnpm add -g turbo
 ```
 
-## Installing the Project
+---
 
-From the repo root:
+## Installation
 
 ```bash
 pnpm install
 ```
 
-Install Playwright browsers for the blog tests:
+This also runs `prisma generate` automatically via the `postinstall` hook in `packages/db`.
 
-```bash
-pnpm --filter playwright-web exec playwright install chromium
-pnpm --filter playwright-admin exec playwright install chromium
-```
-
-Install Playwright browsers for the store:
-
-```bash
-pnpm --filter store exec playwright install chromium
-```
+---
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` in the relevant packages:
-
-| Location | Variables |
-|---|---|
-| `packages/db/.env` | `DATABASE_URL` (blog DB) |
-| `apps/admin/.env` | `JWT_SECRET`, `PASSWORD` |
-| `apps/store/.env` | `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` |
-
-## Running the Project
-
-### All apps (blog only):
+Copy the example files and fill in your values:
 
 ```bash
-turbo dev
+cp apps/web/.env.example apps/web/.env
+cp apps/admin/.env.example apps/admin/.env
+cp packages/db/.env.example packages/db/.env
 ```
 
-Starts blog client at [http://localhost:3001](http://localhost:3001) and admin at [http://localhost:3002](http://localhost:3002).
+| Variable | Used in | Description |
+|---|---|---|
+| `DATABASE_URL` | web, admin, db | Neon PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | web, admin | Random secret — generate with `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | web | `http://localhost:3001` |
+| `NEXTAUTH_URL` | admin | `http://localhost:3002` |
+| `STRIPE_SECRET_KEY` | web | Stripe secret key (`sk_test_...`) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | web | Stripe publishable key (`pk_test_...`) |
+| `STRIPE_WEBHOOK_SECRET` | web | Stripe webhook secret (`whsec_...`) |
 
-### Store only:
+Both apps share the same `DATABASE_URL` and Neon database.
+
+### Generate Auth Secret
 
 ```bash
-pnpm store:dev
+openssl rand -base64 32
 ```
 
-Starts the store at [http://localhost:3003](http://localhost:3003).
-
-### Store database setup:
+### Stripe CLI for Local Webhook Secret
 
 ```bash
-pnpm --filter store db:push
-pnpm --filter store db:seed
+stripe listen --forward-to http://localhost:3001/api/checkout/webhook
 ```
 
-## Running Tests
+Copy the generated `whsec_...` into `STRIPE_WEBHOOK_SECRET`.
 
-### Blog tests (Assignments 2.1 / 2.2 / 2.3):
+---
+
+## Database Setup
+
+Run these commands once to set up the database:
+
+### 1. Generate the Prisma client
 
 ```bash
-turbo test-1   # Assignment 2.1 — Blog client
-turbo test-2   # Assignment 2.2 — Admin
-turbo test-3   # Assignment 2.3 — Backend
-turbo all:test # All blog tests
+pnpm --filter @repo/db db:generate
 ```
 
-### Store E2E tests:
+### 2. Push the schema to the database
+
+Pushes the Prisma schema to Neon without creating migration files (good for development):
 
 ```bash
-pnpm store:test
+pnpm --filter @repo/db db:push
 ```
 
-Or with UI:
+To use proper migrations instead (creates migration history):
 
 ```bash
-pnpm --filter store test:ui
+pnpm --filter @repo/db db:migrate:dev
 ```
 
-## Building
+### 3. Seed the database
 
-### All apps:
+Populates categories, products, an admin user, and a test user:
 
 ```bash
-turbo build
+pnpm --filter @repo/db db:seed
 ```
 
-### Store only:
+Seeding is recommended for local development and CI because it creates sample products plus test users.
+For production Neon, seeding is optional. Only run it if you want starter data.
+
+Seeded accounts:
+
+| Email | Password | Role |
+|---|---|---|
+| admin@electromart.com | admin123 | ADMIN |
+| user@electromart.com | user123 | USER |
+
+### 4. Open Prisma Studio (optional)
+
+Visual browser for your database:
 
 ```bash
-pnpm store:build
+pnpm --filter @repo/db studio
 ```
 
 ---
 
-## Assignment 2 — Original Requirements
+## Running the Apps
 
-### 👾 Requirements — Assignment 2.1 — Client
+### Both apps together (recommended):
 
-#### HOME SCREEN
+```bash
+turbo dev
+# or
+pnpm dev
+```
 
-- [ ] User must see only the "active" posts
-- [ ] User must see the list of blog post categories, where each category points to UI showing only posts of that category
-- [ ] User must see the list of blog post tags, where each tag points to UI showing only posts of that category
-- [ ] User must see the history of blog posts, showing month and year, where each month, year tuple points to UI showing only posts of that category
-- [ ] Tags and history items shown are only considered from active posts
-- [ ] The list shows the following items:
-  - blog title, pointing to detail page
-  - short description
-  - date
-  - image
-  - tags
-  - likes
-  - views
-- [ ] User must be able to switch between dark and light theme with a button
-      The dark theme setting is stored in the "data-theme" attribute on html element
-- [ ] There is a search functionality that filters blogs based on string found in title or description, redirecting to search page
+### Customer storefront only (port 3001):
 
-#### DETAIL SCREEN
+```bash
+pnpm web:dev
+```
 
-- [ ] Detail page shows the same items as list item, but the short description is replaced by formatted long description
-- [ ] Detail text is stored as Markdown, which needs to be converted to HTML
+### Admin panel only (port 3002):
 
-#### CATEGORY SCREEN
+```bash
+pnpm admin:dev
+```
 
-- [ ] Displays posts from the category from url (e.g. /category/react)
-- [ ] Displays "0 Posts" when search does no posts have that category
+---
 
-#### HISTORY SCREEN
+## Building
 
-- [ ] Displays posts from year and month specified in the url (e.g. /history/2024/12)
-- [ ] Displays "0 Posts" when no posts are from that given month and year
+```bash
+pnpm build
+```
 
-#### TAG SCREEN
+Or individually:
 
-- [ ] Displays posts with the tag url (e.g. /tags/dev-tools)
-- [ ] Displays "0 Posts" when search does no posts have that tag
+```bash
+pnpm --filter @repo/web build
+pnpm --filter @repo/admin build
+```
 
-#### SEARCH SCREEN
+---
 
-- [ ] Displays results based on search string stored in the query string (e.g. /search?q=Fat)
-- [ ] Displays "0 Posts" when search does not find anything
+## Testing
 
-### 👾 Requirements — Assignment 2.2 — Admin
+Testing is split into unit, integration, and E2E.
 
-#### ADMIN HOME SCREEN
+### Unit Tests
 
-- [ ] Shows Login screen if not logged
-- [ ] Shows List screen if logged
-- [ ] There must be a logout button
-- [ ] Clicking the logout button logs the user out
-- [ ] Authenticate the current client using a hard-coded password
-- [ ] Use a httpOnly cookie and name it "auth_token" to remember the signed-in state.
+```bash
+pnpm --filter @repo/utils test
+pnpm --filter @repo/ui test
+pnpm --filter @repo/web test
+```
 
-#### ADMIN LIST SCREEN
+### Integration Tests
 
-- [ ] Shows both active and inactive posts
-- [ ] Article list is only accessible to logged-in users.
-- [ ] There is a filter screen that allows filtering posts by: Title or content, Tags, Date, Visibility
-- [ ] You can combine multiple filters
-- [ ] Users can sort posts by name or creation date, both ascending and descending
-- [ ] The post list displays a list of filtered items with image, title, category, tags, and active status
-- [ ] Clicking on the title takes the user to the MODIFY SCREEN
-- [ ] There is a button to create new posts
+Integration coverage is currently handled by API + Playwright flow validation. Add dedicated integration suites as needed.
 
-#### ADMIN CREATE and UPDATE screen
+### Run all tests:
 
-- [ ] Page is only accessible to logged in user
-- [ ] Fields: Title, Description (max 200 chars), Content (markdown), Tag List, Image URL
-- [ ] Description has a "Preview" button rendering markdown
-- [ ] Under the image input is an image preview
-- [ ] "Save" button validates fields before saving
+```bash
+turbo test
+# or
+pnpm --filter @repo/playwright test
+```
 
-### 👾 Requirements — Assignment 2.3 — Backend
+### Run web tests only:
 
-#### BACKEND / CLIENT
+```bash
+pnpm --filter @repo/playwright test-1
+```
 
-- [ ] Data is loaded from the database backend
-- [ ] Data filtering is done server side
-- [ ] Each visit increases the post "views" count by one
-- [ ] User can "like" the post on the detail screen (not list screen)
-- [ ] Liking increases like count by one; user can only like once (by IP); user can unlike
+### Run admin tests only:
 
-#### BACKEND / ADMIN / AUTHORISATION
+```bash
+pnpm --filter @repo/playwright test-2
+```
 
-- [ ] Password is checked on server in `/api/auth` route
-- [ ] POST method for login, DELETE method for logout
-- [ ] Admin home checks for JWT token and verifies it
+### Open Playwright UI:
 
-#### BACKEND / ADMIN / LIST + UPDATE + CREATE
+```bash
+pnpm --filter @repo/playwright ui
+```
 
-- [ ] Logged in user can activate / deactivate posts
-- [ ] Logged in user can save changes and create new posts to the database
+### Generate Playwright Test with Recorder
+
+```bash
+pnpm --filter @repo/playwright exec playwright codegen http://localhost:3001
+```
+
+---
+
+## CI/CD
+
+GitHub Actions uses `.github/workflows/grading.yml` for grading and automated checks.
+
+---
+
+## Changes from Original Codebase
+
+This project is a modified version of the blog monorepo from Assignments 2.1–2.3, converted into a B2C store. The following summarises what was added, modified, and removed.
+
+### Added
+
+**`apps/web` (new store pages and API)**
+- `src/app/products/[id]/page.tsx` — product detail page
+- `src/app/cart/page.tsx` — shopping cart
+- `src/app/checkout/success/page.tsx` — post-payment confirmation
+- `src/app/orders/page.tsx` — order history
+- `src/app/profile/page.tsx` — user profile
+- `src/app/login/page.tsx` and `src/app/register/page.tsx` — auth pages
+- `src/app/api/products/`, `cart/`, `categories/`, `orders/`, `checkout/`, `profile/`, `auth/` — REST API routes
+- `src/components/layout/Navbar.tsx` and `Providers.tsx`
+- `src/components/product/ProductCard.tsx` and `ProductGrid.tsx`
+- `src/lib/auth.ts`, `prisma.ts`, `stripe.ts`
+- `src/middleware.ts` — route protection
+- `src/types/next-auth.d.ts` — session type extension
+
+**`apps/admin` (full admin rebuild)**
+- `src/app/products/page.tsx` and `src/app/orders/page.tsx`
+- `src/app/api/products/`, `orders/`, `categories/`, `admin/stats/`, `auth/` — API routes
+- `src/components/layout/AdminNavbar.tsx` and `Providers.tsx`
+- `src/lib/auth.ts`, `prisma.ts`
+- `src/middleware.ts`
+
+**`packages/db`**
+- `prisma/schema.prisma` — rewritten for store models (User, Category, Product, CartItem, Order, OrderItem)
+- `src/seed.ts` — seeds 13 electronics products across 5 categories
+
+**`tests/playwright`**
+- `tests/web.spec.ts` — storefront E2E tests
+- `tests/admin.spec.ts` — admin panel E2E tests
+
+### Modified
+
+- `apps/web/src/app/page.tsx` — rewritten as product catalogue homepage
+- `apps/web/src/app/layout.tsx` — updated for store branding and Providers
+- `apps/web/src/app/globals.css` — store colour scheme
+- `apps/admin/src/app/page.tsx` — rewritten as admin dashboard with stats
+- `apps/admin/src/app/layout.tsx` — updated for admin branding
+- `apps/admin/package.json` — updated dependencies (NextAuth, Prisma, bcryptjs)
+- `apps/web/package.json` — added Stripe, NextAuth, Prisma, bcryptjs
+- `packages/db/package.json` — added seed script, tsx
+- `turbo.json` — added Stripe + NextAuth env vars to `globalEnv`
+- `.github/workflows/store-ci.yml` — updated to cover web + admin, added DB seed step
+
+### Deleted
+
+**`apps/web` (blog components removed)**
+- `src/components/Blog/` — Detail, List, ListItem components and tests
+- `src/components/Menu/` — CategoryList, TagList, HistoryList, LeftMenu, LinkList, SummaryItem
+- `src/components/Layout/AppLayout.tsx`, `TopMenu.tsx`
+- `src/components/Themes/ThemeContext.tsx`, `ThemeSwitcher.tsx`
+- `src/components/Content.tsx`, `Main.tsx`
+- `src/app/post/[urlId]/`, `category/[name]/`, `tags/[name]/`, `history/[year]/[month]/`, `search/` — all blog routes
+- `src/app/api/likes/route.ts`, `api/seed/route.ts`
+- `src/functions/categories.ts`, `tags.ts`, `history.ts` and their tests
+- `src/utils/posts.ts`
+- `src/types/index.d.ts`
+- `vitest.workspace.ts`
+
+**`apps/admin` (blog admin removed)**
+- `src/app/api/posts/[urlId]/route.ts`
+- `src/app/post/[urlId]/page.tsx`, `posts/create/page.tsx`
+- `src/components/CreateScreen.tsx`, `ListScreen.tsx`, `LoginScreen.tsx`, `LogoutButton.tsx`, `UpdateScreen.tsx`
+- `src/utils/auth.ts`
+
+**`apps/store/`** — entire directory removed (replaced by the `apps/web` + `apps/admin` split)
+
+**`tests/playwright`** — all old blog test specs and fixtures removed
+
+---
+
+## Academic Context
+
+Developed as the Major Assignment for COMP3036 — Full Stack Development (Option 2 — B2C Store Application). Built on the monorepo scaffold established in Assignments 2.1, 2.2, and 2.3, and significantly extended to deliver a working e-commerce platform.

@@ -13,18 +13,32 @@ jobs:
       # in GitHub repo → Settings → Secrets → Actions
       E2E: true
       CI: true
-      DATABASE_URL: file:./dev.db
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/electromart
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       COURSE_ID: full-stack-development-comp3036-2026
       PASSWORD: 123
       JWT_SECRET: secret
-      # NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      # NEXTAUTH_URL: http://127.0.0.1:3001/
+      NEXTAUTH_SECRET: "electromart-ci-secret-2026"
+      NEXTAUTH_URL: http://127.0.0.1:3001/
       # VERCEL_URL: http://127.0.0.1:3001/
       #TURBO_TOKEN: ${{secrets.TURBO_TOKEN}}
       #TURBO_TEAM: team_FXFYQlL6HSM7CAamFdBZ5A6x
       SKIP_ENV_VALIDATION: true
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: electromart
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     if: github.actor != 'github-classroom[bot]'
     steps:
       - uses: pnpm/action-setup@v3
@@ -51,7 +65,7 @@ jobs:
         run: pnpm turbo build
 
       ####################
-      # UTILS TESTS
+      # UNIT TESTS
       ####################
 
       - name: Test - Utils
@@ -65,13 +79,13 @@ jobs:
           timeout: 10
           max-score: 1
 
-      - name: Test - Ui
+      - name: Test - UI
         id: testUi
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
           working-directory: packages/ui
-          test-name: Unit 2 - UI
+          test-name: Unit 2 - UI Components
           command: pnpm test
           timeout: 10
           max-score: 1
@@ -82,87 +96,56 @@ jobs:
         continue-on-error: true
         with:
           working-directory: apps/web
-          test-name: Unit 3 - Web Components
-          command: pnpm test
+          test-name: Unit 3 - Storefront Unit Tests
+          command: pnpm test:unit
+          timeout: 10
+          max-score: 1
+
+      - name: Test - Admin
+        id: testAdmin
+        uses: WesternSydneyUniversity/autograding-command-grader@v2
+        continue-on-error: true
+        with:
+          working-directory: apps/admin
+          test-name: Unit 4 - Admin Unit Tests
+          command: pnpm test:unit
           timeout: 10
           max-score: 1
 
       ####################
-      # ASSIGNMENT 2.1
+      # PLAYWRIGHT INTEGRATION TESTS
       ####################
-      - name: Test Assignment 1 with Playwright
+
+      - name: Test - Storefront Playwright
         id: npm1
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
-          working-directory: .
-          test-name: Part 1 - Client
-          command: pnpm turbo test-1
+          working-directory: tests/playwright
+          test-name: Integration 1 - Storefront
+          command: pnpm test-1
           timeout: 10
           max-score: 1
-      - name: Report Assignment 1 to SkillPies
-        if: always() # run on failed tests as well
-        continue-on-error: true
-        uses: tomitrescak/skillpies-reporting@v1.0
-        with:
-          courseId: ${{env.COURSE_ID}}
-          sectionId: assignment-2-1-blog-client-in-next-js
-          testResult: ${{steps.npm1.outputs.result}}
 
-      ####################
-      # ASSIGNMENT 2.2
-      ####################
-      - name: Test Assignment 2 with Playwright
+      - name: Test - Admin Playwright
         id: npm2
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
-          working-directory: .
-          test-name: Part 2 - Admin
-          command: pnpm turbo test-2
+          working-directory: tests/playwright
+          test-name: Integration 2 - Admin
+          command: pnpm test-2
           timeout: 10
           max-score: 1
-
-      - name: Report Assignment 2 to SkillPies
-        if: always() # run on failed tests as well
-        uses: tomitrescak/skillpies-reporting@v1.0
-        continue-on-error: true
-        with:
-          courseId: ${{env.COURSE_ID}}
-          sectionId: assignment-2-2-blog-admin-in-databases
-          testResult: ${{steps.npm2.outputs.result}}
-
-      ####################
-      # ASSIGNMENT 2.3
-      ####################
-      - name: Test Assignment 3 with Playwright
-        id: npm3
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: .
-          test-name: Part 3 - Backend
-          command: pnpm turbo test-3
-          timeout: 10
-          max-score: 1
-
-      - name: Report Assignment 3 to SkillPies
-        if: always() # run on failed tests as well
-        uses: tomitrescak/skillpies-reporting@v1.0
-        continue-on-error: true
-        with:
-          courseId: ${{env.COURSE_ID}}
-          sectionId: assignment-2-3-blog-backend-in-authentication-and-authorisation
-          testResult: ${{steps.npm3.outputs.result}}
 
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
         env:
           NPM1_RESULTS: "${{steps.npm1.outputs.result}}"
           NPM2_RESULTS: "${{steps.npm2.outputs.result}}"
-          NPM3_RESULTS: "${{steps.npm3.outputs.result}}"
           TESTUTILS_RESULTS: "${{steps.testUtils.outputs.result}}"
           TESTUI_RESULTS: "${{steps.testUi.outputs.result}}"
           TESTWEB_RESULTS: "${{steps.testWeb.outputs.result}}"
+          TESTADMIN_RESULTS: "${{steps.testAdmin.outputs.result}}"
         with:
-          runners: npm1,npm2,npm3,testUtils,testUi,testWeb
+          runners: npm1,npm2,testUtils,testUi,testWeb,testAdmin

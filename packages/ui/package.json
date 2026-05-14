@@ -14,10 +14,11 @@
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit",
-    "test": "vitest --browser.headless",
-    "dev:test": "vitest"
+    "test": "playwright test",
+    "dev:test": "playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
@@ -28,11 +29,8 @@
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/browser": "^3.0.4",
     "playwright": "^1.50.0",
-    "typescript": "5.7.3",
-    "vitest": "^3.0.4",
-    "vitest-browser-react": "^0.0.4"
+    "typescript": "5.7.3"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.0",
