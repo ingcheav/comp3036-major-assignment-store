@@ -37,16 +37,14 @@ export default defineConfig({
   webServer: process.env.CI
     ? [
         {
-          reuseExistingServer: false,
+          reuseExistingServer: true,
           command: "pnpm start:web",
           url: "http://localhost:3001",
-          timeout: 120000,
         },
         {
-          reuseExistingServer: false,
+          reuseExistingServer: true,
           command: "pnpm start:admin",
           url: "http://localhost:3002",
-          timeout: 120000,
         },
       ]
     : undefined,
