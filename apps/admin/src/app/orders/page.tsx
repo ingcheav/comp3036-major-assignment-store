@@ -67,7 +67,7 @@ export default function AdminOrdersPage() {
                   <p className="font-bold text-lg mt-1">${order.total.toFixed(2)}</p>
                 </div>
               </div>
-              <div className="border-t border-gray-100 pt-3 space-y-1">
+              <div className="border-t border-gray-100 pt-3 space-y-1" data-testid="order-details">
                 {order.orderItems.map((item) => (
                   <p key={item.id} className="text-sm text-gray-600">
                     {item.product.name} × {item.quantity} — ${(item.price * item.quantity).toFixed(2)}
