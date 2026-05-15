@@ -1,28 +1,19 @@
-import "dotenv/config";
+import { test as base } from "@playwright/test";
 
-import { type BrowserContext } from "@playwright/test";
-// TODO: Implement seed
-export async function seedData(...options: any[]) {
-  /* After assignment two, move the hard coded data to the seed */
-}
+const USER = { email: "user@electromart.com", password: "user123" };
 
-type AppOptions = {};
+export const test = base.extend({
+  authenticatedAsUser: async ({ page }, use) => {
+    // Login as user
+    await page.goto("/login");
+    await page.fill('[data-testid="email-input"]', USER.email);
+    await page.fill('[data-testid="password-input"]', USER.password);
+    await page.click('[data-testid="login-btn"]');
+    await page.waitForURL("/");
 
-export function createOptions(options: Partial<AppOptions>) {
-  return JSON.stringify({});
-}
+    // Use the authenticated page
+    await use(page);
+  },
+});
 
-export async function setOptions(
-  context: BrowserContext,
-  options: Partial<AppOptions>,
-) {
-  await context.addCookies([
-    {
-      name: "options",
-      url: process.env.VERCEL_URL,
-      value: createOptions(options),
-    },
-  ]);
-}
-
-export * from "@playwright/test";
+export const expect = base.expect;

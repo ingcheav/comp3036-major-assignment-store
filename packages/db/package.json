@@ -22,23 +22,24 @@
       "types": "./src/client.ts",
       "default": "./dist/client.js"
     },
-    "./data": {
-      "types": "./src/data.ts",
-      "default": "./dist/data.js"
-    },
     "./seed": {
       "types": "./src/seed.ts",
       "default": "./dist/seed.js"
     }
   },
   "dependencies": {
-    "@repo/env": "workspace:*"
+    "@prisma/client": "^6.3.1",
+    "@repo/env": "workspace:*",
+    "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
+    "@prisma/client": "^6.3.1",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.13.1",
+    "prisma": "^6.3.1",
     "tsx": "^4.19.2",
     "vitest": "^3.0.4"
   }

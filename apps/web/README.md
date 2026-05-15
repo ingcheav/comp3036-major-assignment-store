@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# ElectroMart — Customer Storefront
+
+The B2C customer-facing app for ElectroMart, a premium electronics store. Built with Next.js 14, NextAuth, Prisma, Tailwind CSS, and Stripe.
+
+Part of the `comp3036-major-assignment-store` monorepo. Runs on **port 3001**.
+
+## Features
+
+- Browse and search products by name and category
+- Product detail pages with related products
+- Shopping cart (add, update quantity, remove)
+- Stripe checkout with webhook order fulfillment
+- User registration and login (JWT sessions via NextAuth)
+- Order history and profile page
+- Admin users are recognised — cart and checkout are hidden for them
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Auth | NextAuth v4 (credentials + JWT) |
+| Database | PostgreSQL via Neon + Prisma ORM |
+| Payments | Stripe Checkout + webhooks |
+| Styling | Tailwind CSS 3 (`#03254c` navy theme) |
 
 ## Getting Started
 
-First, run the development server:
+### 1. Environment variables
+
+Copy `.env.example` to `.env` and fill in your values:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```env
+DATABASE_URL="postgresql://..."
+NEXTAUTH_SECRET="..."
+NEXTAUTH_URL="http://localhost:3001"
+STRIPE_SECRET_KEY="sk_test_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Generate Prisma client
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+```bash
+pnpm db:generate
+```
 
-## Learn More
+### 3. Run the dev server
 
-To learn more about Next.js, take a look at the following resources:
+From the monorepo root:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm web:dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Or from this directory:
 
-## Deploy on Vercel
+```bash
+pnpm dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Open [http://localhost:3001](http://localhost:3001).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx                  # Home — product grid
+│   ├── login/                    # Sign-in page
+│   ├── register/                 # Account creation
+│   ├── cart/                     # Shopping cart
+│   ├── checkout/success/         # Post-payment confirmation
+│   ├── orders/                   # Order history
+│   ├── profile/                  # User profile
+│   ├── products/[id]/            # Product detail
+│   └── api/
+│       ├── auth/[...nextauth]/   # NextAuth handler
+│       ├── auth/logout/          # Session logout
+│       ├── auth/register/        # User registration
+│       ├── products/             # GET all, POST (admin)
+│       ├── products/[id]/        # GET one, PUT/DELETE (admin)
+│       ├── categories/           # GET all categories
+│       ├── cart/                 # GET, POST, DELETE cart
+│       ├── cart/[id]/            # PUT/DELETE cart item
+│       ├── checkout/             # POST — create Stripe session
+│       ├── checkout/webhook/     # Stripe webhook → create order
+│       ├── orders/               # GET user orders
+│       └── profile/              # GET user profile
+├── components/
+│   ├── layout/Navbar.tsx         # Sticky navbar with cart badge
+│   ├── layout/Providers.tsx      # NextAuth SessionProvider
+│   ├── product/ProductCard.tsx   # Product tile with add-to-cart
+│   └── product/ProductGrid.tsx   # Filtered, searchable grid
+├── lib/
+│   ├── auth.ts                   # NextAuth options
+│   ├── prisma.ts                 # Prisma client singleton
+│   └── stripe.ts                 # Stripe client singleton
+├── middleware.ts                 # Protects /cart, /orders, /profile
+└── types/next-auth.d.ts          # Session type augmentation
+```
+
+## API Routes
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| GET | `/api/products` | — | List products (search & category filter) |
+| GET | `/api/products/[id]` | — | Single product |
+| POST | `/api/products` | ADMIN | Create product |
+| PUT | `/api/products/[id]` | ADMIN | Update product |
+| DELETE | `/api/products/[id]` | ADMIN | Delete product |
+| GET | `/api/categories` | — | List categories |
+| GET | `/api/cart` | USER | Get cart items |
+| POST | `/api/cart` | USER | Add to cart |
+| DELETE | `/api/cart` | USER | Clear cart |
+| PUT | `/api/cart/[id]` | USER | Update item quantity |
+| DELETE | `/api/cart/[id]` | USER | Remove item |
+| POST | `/api/checkout` | USER | Create Stripe checkout session |
+| POST | `/api/checkout/webhook` | Stripe | Fulfil order on payment |
+| GET | `/api/orders` | USER | Order history |
+| GET | `/api/profile` | USER | User profile |
+| POST | `/api/auth/register` | — | Create new account |
+| POST | `/api/auth/logout` | USER | Logout helper |

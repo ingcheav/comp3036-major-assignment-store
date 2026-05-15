@@ -2,7 +2,7 @@ import { seed } from "./seed.js";
 
 seed()
   .then(() => {
-    console.log("✅ Seed complete");
+    console.log("✅ Seed completed");
     process.exit(0);
   })
   .catch((err) => {

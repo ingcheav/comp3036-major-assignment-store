@@ -9,15 +9,7 @@ export const createClient = () => {
     return global.prisma;
   }
 
-  const prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: "file:../../../packages/db/prisma/dev.db",
-      },
-    },
-  });
-
-  console.log("Connected to database");
+  const prisma = new PrismaClient();
 
   global.prisma = prisma;
   return prisma;

@@ -1,3 +1,13 @@
+/**
+ * Combines CSS class names from strings and conditional object maps.
+ * Accepts any mix of:
+ *   - Strings: included as-is
+ *   - Objects: keys are included only when their value is truthy
+ *   - null / undefined: silently skipped
+ * @param classes - Any number of class strings, conditional objects, or nullish values
+ * @returns A single space-separated string of all active class names
+ * @example cx("btn", { "btn-primary": true, "btn-disabled": false }) // "btn btn-primary"
+ */
 export function cx(
   ...classes: Array<
     string | Record<string, boolean | null | undefined> | null | undefined

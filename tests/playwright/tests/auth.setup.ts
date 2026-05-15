@@ -1,54 +1,26 @@
 import { test as setup } from "@playwright/test";
-import fs from "fs";
 
-////////////////////////////////////////
-// Authentication for Assignment 2
-// Delete the code block below if you are not using it
-////////////////////////////////////////
+const ADMIN = { email: "admin@electromart.com", password: "admin123" };
+const USER = { email: "user@electromart.com", password: "user123" };
 
-// setup(
-//   "authenticate assignment 2",
-//   { tag: "@a2" },
-//   async ({ page, playwright }) => {
-//     const authFile = ".auth/user.json";
-//     const content = {
-//       cookies: [
-//        {
-//          name: "auth_token",
-//         value: "123",
-//          domain: "localhost",
-//          secure: false,
-//          expires: -1,
-//          path: "/",
-//          httpOnly: false,
-//          sameSite: "Lax",
-//        },
-//      ],
-//    };
-//    fs.writeFileSync(authFile, JSON.stringify(content, null, 2));
-//  },
-//);
+setup("authenticate as admin", async ({ page }) => {
+  await page.goto("/login");
+  await page.fill('[data-testid="email-input"]', ADMIN.email);
+  await page.fill('[data-testid="password-input"]', ADMIN.password);
+  await page.click('[data-testid="login-btn"]');
+  await page.waitForURL("/");
 
-////////////////////////////////////////////////////////
-// Authentication for Assignment 3
-// Uncomment once you start working on the assignment 3
-////////////////////////////////////////////////////////
+  // Save storage state
+  await page.context().storageState({ path: "auth/admin.json" });
+});
 
-setup(
-  "authenticate assignment 3",
-  { tag: "@a3" },
-  async ({ playwright }) => {
-    const authFile = ".auth/user.json";
+setup("authenticate as user", async ({ page }) => {
+  await page.goto("/login");
+  await page.fill('[data-testid="email-input"]', USER.email);
+  await page.fill('[data-testid="password-input"]', USER.password);
+  await page.click('[data-testid="login-btn"]');
+  await page.waitForURL("/");
 
-    const apiContext = await playwright.request.newContext();
-
-    await apiContext.post("/api/auth", {
-      data: JSON.stringify({ password: "123" }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    await apiContext.storageState({ path: authFile });
-  },
-);
+  // Save storage state
+  await page.context().storageState({ path: "auth/user.json" });
+});
