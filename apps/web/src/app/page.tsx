@@ -1,24 +1,8 @@
+"use client";
 import Link from "next/link";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { prisma } from "@/lib/prisma";
 
-interface Category { id: string; name: string }
-
-async function getCategories(): Promise<Category[]> {
-  try {
-    const cats = await prisma.category.findMany({ orderBy: { name: "asc" } });
-    console.log("[getCategories] fetched:", cats.length, "categories");
-    return cats;
-  } catch (err) {
-    console.error("[getCategories] failed:", err);
-    return [];
-  }
-}
-
-export default async function HomePage() {
-  const categories = await getCategories();
-  console.log("[HomePage] rendering with", categories.length, "categories");
-
+export default function HomePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
       <section className="section-shell mb-6 overflow-hidden bg-[linear-gradient(135deg,rgba(3,37,76,0.98),rgba(8,58,103,0.94)_55%,rgba(17,90,152,0.84))] p-4 text-white shadow-[0_22px_60px_-36px_rgba(3,37,76,0.6)] sm:p-5">
@@ -49,7 +33,7 @@ export default async function HomePage() {
       </section>
 
       <div id="products">
-        <ProductGrid initialCategories={categories} />
+        <ProductGrid />
       </div>
     </div>
   );

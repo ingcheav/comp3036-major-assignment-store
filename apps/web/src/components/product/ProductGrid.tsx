@@ -17,26 +17,19 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High–Low" },
 ];
 
-export function ProductGrid({ initialCategories }: { initialCategories?: Category[] }) {
+interface Props {
+  initialCategories: Category[];
+}
+
+export function ProductGrid({ initialCategories }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>(initialCategories ?? []);
-  const [categoriesLoaded, setCategoriesLoaded] = useState(initialCategories !== undefined);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (initialCategories !== undefined) return;
-    fetch("/api/categories")
-      .then((r) => r.json())
-      .then((data) => {
-        setCategories(Array.isArray(data) ? data : []);
-        setCategoriesLoaded(true);
-      });
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -49,7 +42,7 @@ export function ProductGrid({ initialCategories }: { initialCategories?: Categor
 
     fetch(`/api/products?${params}`)
       .then((r) => r.json())
-      .then((data) => { setProducts(Array.isArray(data) ? data : []); setLoading(false); });
+      .then((data) => { setProducts(data); setLoading(false); });
   }, [search, selectedCategory, sortBy, minPrice, maxPrice]);
 
   return (
@@ -81,7 +74,6 @@ export function ProductGrid({ initialCategories }: { initialCategories?: Categor
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="input cursor-pointer bg-white"
           data-testid="category-filter"
-          disabled={!categoriesLoaded}
         >
           <option value="">All Categories</option>
           {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
@@ -125,7 +117,7 @@ export function ProductGrid({ initialCategories }: { initialCategories?: Categor
         )}
       </div>
 
-      {categoriesLoaded && categories.length > 0 && (
+      {categories.length > 0 && (
         <div className="mb-8 flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory("")}
