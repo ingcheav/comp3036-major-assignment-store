@@ -46,7 +46,7 @@ A full-stack B2C electronics store built as the Major Assignment for **COMP3036 
 |---|---|---|
 | 1 | **User Authentication** | Register, login, logout with NextAuth credentials provider and JWT sessions. Role-based access control (`USER` / `ADMIN`). |
 | 2 | **Shopping Cart** | Add, remove, and update item quantities. Cart state is persisted in the database per user. |
-| 3 | **Payment Integration** | Stripe Checkout sessions (test/mock mode) with webhook-driven order fulfilment and automatic stock decrement on successful payment. |
+| 3 | **Payment Integration** | Stripe Checkout sessions (test mode) with webhook-driven order fulfilment and automatic stock decrement on successful payment. |
 | 4 | **Purchase History** | Orders page listing all past orders with line items, unit prices, quantities, totals, and status badges. |
 | 5 | **Product Filtering & Search** | Search by name, filter by category, filter by price range, and sort by price or name — all without page reloads. |
 
@@ -72,7 +72,7 @@ A full-stack B2C electronics store built as the Major Assignment for **COMP3036 
 | Auth | [NextAuth v4](https://next-auth.js.org/) — credentials provider + JWT |
 | Database | PostgreSQL hosted on [Neon](https://neon.tech) |
 | ORM | [Prisma 6](https://www.prisma.io/) |
-| Payments | [Stripe](https://stripe.com/) — Checkout sessions + webhooks (test/mock mode) |
+| Payments | [Stripe](https://stripe.com/) — Checkout sessions + webhooks (test mode) |
 | Monorepo | [Turborepo](https://turbo.build/) + pnpm workspaces |
 | E2E Tests | [Playwright](https://playwright.dev/) |
 | Unit Tests | [Vitest](https://vitest.dev/) |
@@ -359,6 +359,9 @@ pnpm --filter @repo/playwright test-1
 # Admin E2E tests only
 pnpm --filter @repo/playwright test-2
 
+# API E2E tests only
+pnpm --filter @repo/playwright test-3
+
 # Open the Playwright UI (interactive mode)
 pnpm --filter @repo/playwright ui
 ```
@@ -387,11 +390,12 @@ pnpm --filter @repo/ui test
 
 | Suite | Location | Runner | Count |
 |---|---|---|---|
-| Vitest unit — utils | `packages/utils/src/` | `pnpm test` | 2 |
-| Vitest unit — web | `apps/web/tests/` | `pnpm test` | 2 |
-| Vitest unit — admin | `apps/admin/tests/` | `pnpm test` | 1 |
-| Playwright UI components | `packages/ui/tests/` | `pnpm test` | 15 |
-| Playwright E2E | `tests/playwright/tests/` | `pnpm test` | 107 |
+| Vitest unit — utils | `packages/utils/src/` | `testUtils` | 2 |
+| Playwright UI components | `packages/ui/tests/` | `testUi` | 15 |
+| Vitest unit — web + admin | `apps/web/tests/` + `apps/admin/tests/` | `testComponent` | 3 |
+| Playwright E2E — Storefront | `tests/playwright/tests/web/` | `npm1` | 59 |
+| Playwright E2E — Admin | `tests/playwright/tests/admin/` | `npm2` | 41 |
+| Playwright E2E — API | `tests/playwright/tests/api.spec.ts` | `npm3` | 7 |
 | **Total** | | | **127** |
 
 ---
@@ -419,15 +423,15 @@ push / workflow_dispatch
   3. pnpm --filter @repo/db push  — push Prisma schema to the CI database
   4. pnpm turbo build             — type-check and build all apps
 
-  Unit tests (autograded):
+Unit tests (autograded):
   5. packages/utils  pnpm test         (Unit 1 — Utils)
   6. packages/ui     pnpm test         (Unit 2 — UI Components)
-  7. apps/web        pnpm test:unit    (Unit 3 — Storefront)
-  8. apps/admin      pnpm test:unit    (Unit 4 — Admin)
+  7. apps/web + apps/admin  pnpm test:unit  (Unit 3 — Storefront and Admin)
 
-  Playwright E2E (autograded):
-  9.  tests/playwright  pnpm test-1   (Integration 1 — Storefront)
-  10. tests/playwright  pnpm test-2   (Integration 2 — Admin)
+Playwright E2E (autograded):
+  8.  tests/playwright  pnpm test-1   (Integration 1 — Storefront)
+  9.  tests/playwright  pnpm test-2   (Integration 2 — Admin)
+  10. tests/playwright  pnpm test-3   (Integration 3 — API)
         │
         ▼
   Autograding Reporter aggregates all results
@@ -453,7 +457,7 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
 
 ## Iteration Deliverables
 
-### Iteration 1 — Week 12 
+### Iteration 1 — Week 12 (COMPLETED)
 
 - All 6 core features implemented end-to-end (frontend + backend API routes):
   1. **User Authentication** — register, login, logout, JWT sessions, role-based access (USER/ADMIN)
@@ -468,6 +472,7 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
 - Admin app with dashboard stats, product CRUD, order viewer, and category management
 - Customer storefront with catalogue, search/filter, cart, Stripe checkout, and order history
 - Database seeded with 13 electronics products across 5 categories, 2 users, and a test order
+- Comprehensive error handling (try/catch) on all database-touching API routes
 
 ### Iteration 2 — Week 14 (Planned)
 
