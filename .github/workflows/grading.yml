@@ -57,6 +57,20 @@ jobs:
       - name: Install Playwright Browsers for UI
         working-directory: packages/ui
         run: pnpm playwright install chromium --with-deps
+      - name: Create web .env
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/electromart" > apps/web/.env
+          echo "NEXTAUTH_SECRET=electromart-ci-secret-2026" >> apps/web/.env
+          echo "NEXTAUTH_URL=http://127.0.0.1:3001" >> apps/web/.env
+          echo "NEXT_PUBLIC_APP_URL=http://127.0.0.1:3001" >> apps/web/.env
+          echo "STRIPE_SECRET_KEY=sk_test_placeholder" >> apps/web/.env
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_placeholder" >> apps/web/.env
+          echo "STRIPE_WEBHOOK_SECRET=whsec_placeholder" >> apps/web/.env
+      - name: Create admin .env
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/electromart" > apps/admin/.env
+          echo "NEXTAUTH_SECRET=electromart-ci-secret-2026" >> apps/admin/.env
+          echo "NEXTAUTH_URL=http://127.0.0.1:3002" >> apps/admin/.env
       - name: Push Database 📦
         run: pnpm --filter @repo/db db:push
       - name: Build the project 🏗
