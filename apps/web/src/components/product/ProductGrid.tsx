@@ -17,10 +17,10 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High–Low" },
 ];
 
-export function ProductGrid() {
+export function ProductGrid({ initialCategories }: { initialCategories?: Category[] }) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [categories, setCategories] = useState<Category[]>(initialCategories ?? []);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(initialCategories !== undefined);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("");
@@ -29,6 +29,7 @@ export function ProductGrid() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (initialCategories !== undefined) return;
     fetch("/api/categories")
       .then((r) => r.json())
       .then((data) => {
@@ -75,25 +76,16 @@ export function ProductGrid() {
           className="input"
           data-testid="search-input"
         />
-        {categoriesLoaded ? (
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="input cursor-pointer bg-white"
-            data-testid="category-filter"
-          >
-            <option value="">All Categories</option>
-            {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
-          </select>
-        ) : (
-          <select
-            className="input cursor-pointer bg-white"
-            data-testid="category-filter-loading"
-            disabled
-          >
-            <option>Loading...</option>
-          </select>
-        )}
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="input cursor-pointer bg-white"
+          data-testid="category-filter"
+          disabled={!categoriesLoaded}
+        >
+          <option value="">All Categories</option>
+          {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+        </select>
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
