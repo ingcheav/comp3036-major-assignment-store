@@ -144,6 +144,6 @@ jobs:
           NPM3_RESULTS: "${{steps.npm3.outputs.result}}"
           TESTUTILS_RESULTS: "${{steps.testUtils.outputs.result}}"
           TESTUI_RESULTS: "${{steps.testUi.outputs.result}}"
-          TESTWEB_RESULTS: "${{steps.testComponent.outputs.result}}"
+          TESTCOMPONENT_RESULTS: "${{steps.testComponent.outputs.result}}"
         with:
           runners: npm1,npm2,npm3,testUtils,testUi,testComponent
