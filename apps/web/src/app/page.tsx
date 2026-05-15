@@ -1,23 +1,23 @@
 import Link from "next/link";
 import { ProductGrid } from "@/components/product/ProductGrid";
+import { prisma } from "@/lib/prisma";
 
 interface Category { id: string; name: string }
 
 async function getCategories(): Promise<Category[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://127.0.0.1:3001";
-    const res = await fetch(`${baseUrl.replace(/\/$/, "")}/api/categories`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
+    const cats = await prisma.category.findMany({ orderBy: { name: "asc" } });
+    console.log("[getCategories] fetched:", cats.length, "categories");
+    return cats;
+  } catch (err) {
+    console.error("[getCategories] failed:", err);
     return [];
   }
 }
 
 export default async function HomePage() {
   const categories = await getCategories();
+  console.log("[HomePage] rendering with", categories.length, "categories");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
