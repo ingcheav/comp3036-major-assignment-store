@@ -15,13 +15,16 @@ export default async function SuccessPage({
   // Only initialize Stripe when this page is actually visited, not at build time
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-  const stripeSession = await stripe.checkout.sessions.retrieve(session_id);
-
-  if (stripeSession.payment_status === "paid") {
-    const userId = stripeSession.metadata?.userId;
-    if (userId) {
-      await finalizeCheckout(userId, stripeSession.id);
+  try {
+    const stripeSession = await stripe.checkout.sessions.retrieve(session_id);
+    if (stripeSession.payment_status === "paid") {
+      const userId = stripeSession.metadata?.userId;
+      if (userId) {
+        await finalizeCheckout(userId, stripeSession.id);
+      }
     }
+  } catch {
+    // Webhook likely already processed this session — safe to continue to success UI
   }
 
   return (

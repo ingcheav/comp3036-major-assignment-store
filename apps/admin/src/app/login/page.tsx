@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
     const sessionData = await sessionRes.json();
     if (sessionData?.user?.role !== "ADMIN") {
       await signOut({ redirect: false });
-      window.location.href = "http://localhost:3001/login";
+      window.location.href = (process.env.NEXT_PUBLIC_WEB_URL ?? "http://localhost:3001") + "/login";
       return;
     }
 

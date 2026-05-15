@@ -26,6 +26,10 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await prisma.category.delete({ where: { id: params.id } });
-  return NextResponse.json({ success: true });
+  try {
+    await prisma.category.delete({ where: { id: params.id } });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Cannot delete category — it may still have products assigned" }, { status: 409 });
+  }
 }
