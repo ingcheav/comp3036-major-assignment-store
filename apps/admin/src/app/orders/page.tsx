@@ -56,18 +56,18 @@ export default function AdminOrdersPage() {
             <div key={order.id} className="card p-6" data-testid="order-row">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="font-medium">#{order.id.slice(-8).toUpperCase()}</p>
+                  <p className="font-medium" data-testid="order-id">#{order.id.slice(-8).toUpperCase()}</p>
                   <p className="text-sm text-gray-500">{order.user.name} — {order.user.email}</p>
                   <p className="text-sm text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="text-right">
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColors[order.status] ?? "bg-gray-100"}`}>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColors[order.status] ?? "bg-gray-100"}`} data-testid="order-status">
                     {order.status}
                   </span>
                   <p className="font-bold text-lg mt-1">${order.total.toFixed(2)}</p>
                 </div>
               </div>
-              <div className="border-t border-gray-100 pt-3 space-y-1" data-testid="order-details">
+              <div className="border-t border-gray-100 pt-3 space-y-1" data-testid="order-detail-view">
                 {order.orderItems.map((item) => (
                   <p key={item.id} className="text-sm text-gray-600">
                     {item.product.name} × {item.quantity} — ${(item.price * item.quantity).toFixed(2)}
