@@ -17,25 +17,19 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High–Low" },
 ];
 
-export function ProductGrid() {
+interface Props {
+  initialCategories: Category[];
+}
+
+export function ProductGrid({ initialCategories }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/categories")
-      .then((r) => r.json())
-      .then((data) => {
-        setCategories(data);
-        setCategoriesLoaded(true);
-      });
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -80,7 +74,6 @@ export function ProductGrid() {
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="input cursor-pointer bg-white"
           data-testid="category-filter"
-          aria-busy={!categoriesLoaded}
         >
           <option value="">All Categories</option>
           {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
@@ -124,7 +117,7 @@ export function ProductGrid() {
         )}
       </div>
 
-      {categoriesLoaded && categories.length > 0 && (
+      {categories.length > 0 && (
         <div className="mb-8 flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory("")}
