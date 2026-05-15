@@ -18,10 +18,10 @@ const SORT_OPTIONS = [
 ];
 
 interface Props {
-  initialCategories: Category[];
+  initialCategories?: Category[];
 }
 
-export function ProductGrid({ initialCategories }: Props) {
+export function ProductGrid({ initialCategories = [] }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [search, setSearch] = useState("");
@@ -30,6 +30,14 @@ export function ProductGrid({ initialCategories }: Props) {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (initialCategories.length === 0) {
+      fetch("/api/categories")
+        .then((r) => r.json())
+        .then((data) => setCategories(Array.isArray(data) ? data : []));
+    }
+  }, [initialCategories.length]);
 
   useEffect(() => {
     setLoading(true);
@@ -42,7 +50,7 @@ export function ProductGrid({ initialCategories }: Props) {
 
     fetch(`/api/products?${params}`)
       .then((r) => r.json())
-      .then((data) => { setProducts(data); setLoading(false); });
+      .then((data) => { setProducts(Array.isArray(data) ? data : []); setLoading(false); });
   }, [search, selectedCategory, sortBy, minPrice, maxPrice]);
 
   return (
