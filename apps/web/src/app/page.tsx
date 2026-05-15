@@ -1,10 +1,8 @@
-import { ProductGrid } from "@/components/product/ProductGrid";
+"use client";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { ProductGrid } from "@/components/product/ProductGrid";
 
-export default async function HomePage() {
-  const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
-
+export default function HomePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
       <section className="section-shell mb-6 overflow-hidden bg-[linear-gradient(135deg,rgba(3,37,76,0.98),rgba(8,58,103,0.94)_55%,rgba(17,90,152,0.84))] p-4 text-white shadow-[0_22px_60px_-36px_rgba(3,37,76,0.6)] sm:p-5">
@@ -35,7 +33,7 @@ export default async function HomePage() {
       </section>
 
       <div id="products">
-        <ProductGrid initialCategories={categories} />
+        <ProductGrid />
       </div>
     </div>
   );
