@@ -153,7 +153,15 @@ export default function AdminPreviewPage() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="card h-72 animate-pulse bg-gray-100" />
+            <div key={i} className="card overflow-hidden animate-pulse">
+                <div className="aspect-square w-full bg-gray-100" />
+                <div className="p-4 space-y-3">
+                  <div className="h-3 w-1/3 bg-gray-100 rounded" />
+                  <div className="h-4 w-3/4 bg-gray-100 rounded" />
+                  <div className="h-3 w-full bg-gray-100 rounded" />
+                  <div className="h-3 w-2/3 bg-gray-100 rounded" />
+                </div>
+              </div>
           ))}
         </div>
       ) : products.length === 0 ? (
@@ -164,22 +172,22 @@ export default function AdminPreviewPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((p) => (
-            <div key={p.id} className="card flex flex-col overflow-hidden hover:shadow-md transition-shadow">
-              <div className="h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
+            <div key={p.id} className="card group flex flex-col overflow-hidden hover:-translate-y-1 hover:shadow-[0_28px_60px_-30px_rgba(15,23,42,0.45)] transition-all">
+              <div className="aspect-square w-full flex items-center justify-center overflow-hidden bg-[linear-gradient(160deg,rgba(248,250,252,0.98),rgba(226,232,240,0.72))]">
                 {p.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={p.imageUrl} alt={p.name} className="max-h-40 max-w-full object-contain" />
+                  <img src={p.imageUrl} alt={p.name} className="h-full w-full object-contain p-6 transition-transform duration-300 group-hover:scale-[1.04]" />
                 ) : (
-                  <div className="flex items-center justify-center h-full text-4xl">📦</div>
+                  <div className="text-6xl">📦</div>
                 )}
               </div>
 
               <div className="p-4 flex flex-col flex-1">
-                <span className="text-xs text-[#1167b1] font-medium mb-1">{p.category.name}</span>
-                <h3 className="font-semibold text-gray-900 line-clamp-1">{p.name}</h3>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#1167b1] mb-1">{p.category.name}</span>
+                <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-[#1167b1] transition-colors">{p.name}</h3>
                 <p className="text-sm text-gray-500 mt-1 line-clamp-2 flex-1">{p.description}</p>
 
-                <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200/70">
                   <span className="text-lg font-bold text-gray-900">${p.price.toFixed(2)}</span>
                   <StockBadge stock={p.stock} />
                 </div>
