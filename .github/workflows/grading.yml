@@ -9,8 +9,6 @@ permissions:
 jobs:
   run-autograding-tests:
     env:
-      # For recording and parallelization to work you must set your CYPRESS_RECORD_KEY
-      # in GitHub repo → Settings → Secrets → Actions
       E2E: true
       CI: true
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/electromart
@@ -20,9 +18,6 @@ jobs:
       JWT_SECRET: secret
       NEXTAUTH_SECRET: "electromart-ci-secret-2026"
       NEXTAUTH_URL: http://127.0.0.1:3001/
-      # VERCEL_URL: http://127.0.0.1:3001/
-      #TURBO_TOKEN: ${{secrets.TURBO_TOKEN}}
-      #TURBO_TEAM: team_FXFYQlL6HSM7CAamFdBZ5A6x
       SKIP_ENV_VALIDATION: true
     runs-on: ubuntu-latest
     services:
@@ -93,25 +88,14 @@ jobs:
           timeout: 10
           max-score: 1
 
-      - name: Test - Web
-        id: testWeb
+      - name: Test - Web and Admin
+        id: testComponent
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
         with:
-          working-directory: apps/web
-          test-name: Unit 3 - Storefront Unit Tests
-          command: pnpm test:unit
-          timeout: 10
-          max-score: 1
-
-      - name: Test - Admin
-        id: testAdmin
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: apps/admin
-          test-name: Unit 4 - Admin Unit Tests
-          command: pnpm test:unit
+          working-directory: .
+          test-name: Unit 3 - Storefront and Admin Unit Tests
+          command: pnpm --filter @repo/web test:unit && pnpm --filter @repo/admin test:unit
           timeout: 10
           max-score: 1
 
@@ -141,14 +125,25 @@ jobs:
           timeout: 10
           max-score: 1
 
+      - name: Test - API Playwright
+        id: npm3
+        uses: WesternSydneyUniversity/autograding-command-grader@v2
+        continue-on-error: true
+        with:
+          working-directory: tests/playwright
+          test-name: Integration 3 - API
+          command: pnpm playwright install chromium --with-deps && pnpm test-3
+          timeout: 10
+          max-score: 1
+
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
         env:
           NPM1_RESULTS: "${{steps.npm1.outputs.result}}"
           NPM2_RESULTS: "${{steps.npm2.outputs.result}}"
+          NPM3_RESULTS: "${{steps.npm3.outputs.result}}"
           TESTUTILS_RESULTS: "${{steps.testUtils.outputs.result}}"
           TESTUI_RESULTS: "${{steps.testUi.outputs.result}}"
-          TESTWEB_RESULTS: "${{steps.testWeb.outputs.result}}"
-          TESTADMIN_RESULTS: "${{steps.testAdmin.outputs.result}}"
+          TESTWEB_RESULTS: "${{steps.testComponent.outputs.result}}"
         with:
-          runners: npm1,npm2,testUtils,testUi,testWeb,testAdmin
+          runners: npm1,npm2,npm3,testUtils,testUi,testComponent

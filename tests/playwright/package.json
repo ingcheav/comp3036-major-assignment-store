@@ -8,6 +8,7 @@
     "test": "playwright test",
     "test-1": "playwright test tests/web",
     "test-2": "playwright test tests/admin",
+    "test-3": "playwright test tests/api.spec.ts",
     "ui": "playwright test --ui"
   },
   "keywords": [],
