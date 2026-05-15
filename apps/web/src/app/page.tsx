@@ -5,8 +5,10 @@ interface Category { id: string; name: string }
 
 async function getCategories(): Promise<Category[]> {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3001";
-    const res = await fetch(`${baseUrl}/api/categories`, { cache: "no-store" });
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://127.0.0.1:3001";
+    const res = await fetch(`${baseUrl.replace(/\/$/, "")}/api/categories`, {
+      cache: "no-store",
+    });
     if (!res.ok) return [];
     return res.json();
   } catch {
