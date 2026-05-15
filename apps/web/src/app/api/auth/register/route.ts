@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * POST /api/auth/register
+ * Creates a new user account with a hashed password.
+ * @param req - JSON body with name, email, and password (min 6 chars)
+ * @returns The created user object { id, name, email, role }, HTTP 201 on success
+ */
 export async function POST(req: NextRequest) {
   try {
     const { name, email, password } = await req.json();

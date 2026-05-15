@@ -3,6 +3,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * NextAuth configuration for the customer storefront.
+ * Uses the Credentials provider with email/password authentication and bcrypt verification.
+ * JWT sessions carry the user's id and role for use in API routes and middleware.
+ * Sessions expire after 15 minutes of inactivity.
+ */
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({

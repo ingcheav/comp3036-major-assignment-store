@@ -3,6 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * GET /api/admin/stats
+ * Returns aggregated store statistics for the admin dashboard.
+ * Requires ADMIN role.
+ * @returns JSON object with products count, orders count, total revenue (PAID orders only), and users count
+ */
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") {

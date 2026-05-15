@@ -3,6 +3,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * PUT /api/cart/[id]
+ * Updates the quantity of a specific cart item.
+ * Validates that the item belongs to the authenticated user.
+ * @param req - JSON body with quantity (must be >= 1)
+ * @param params.id - The cart item's unique identifier
+ * @returns The updated CartItem including product details
+ */
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,6 +32,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(item);
 }
 
+/**
+ * DELETE /api/cart/[id]
+ * Removes a specific cart item.
+ * Validates that the item belongs to the authenticated user before deletion.
+ * @param params.id - The cart item's unique identifier
+ * @returns JSON { success: true } on successful deletion
+ */
 export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

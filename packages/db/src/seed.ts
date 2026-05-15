@@ -3,6 +3,12 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+/**
+ * Upserts a product category by name.
+ * Creates the category if it does not exist; leaves it unchanged if it does.
+ * @param name - The unique category name
+ * @returns The existing or newly created Category record
+ */
 async function upsertCategory(name: string) {
   return prisma.category.upsert({
     where: { name },
@@ -11,6 +17,13 @@ async function upsertCategory(name: string) {
   });
 }
 
+/**
+ * Creates a product if one with the same name does not already exist.
+ * If a product with the given name exists, updates it with the provided data.
+ * This allows re-running the seed without creating duplicate products.
+ * @param data - Product data including name, description, price, stock, categoryId, and imageUrl
+ * @returns The existing (updated) or newly created Product record
+ */
 async function createProductIfMissing(data: {
   name: string;
   description: string;
@@ -26,6 +39,12 @@ async function createProductIfMissing(data: {
   return prisma.product.create({ data });
 }
 
+/**
+ * Seeds the database with the initial set of test data.
+ * Creates 5 categories, 2 users (admin + regular), 13 products across those categories,
+ * and 1 test PAID order for the regular user if none exists yet.
+ * All upsert operations make the seed idempotent — safe to run multiple times.
+ */
 export async function seed() {
   console.log("🌱 Seeding data");
 

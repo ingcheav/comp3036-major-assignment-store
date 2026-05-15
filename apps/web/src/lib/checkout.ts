@@ -8,6 +8,17 @@ type CheckoutItem = {
   product: { price: number };
 };
 
+/**
+ * Finalizes a Stripe checkout by creating an Order in the database.
+ * Idempotent — if an order for the given stripeSessionId already exists, returns it unchanged.
+ * Within a single Prisma transaction this function:
+ *   1. Creates the Order with PAID status and all OrderItems
+ *   2. Decrements stock for each purchased product
+ *   3. Clears all CartItems for the user
+ * @param userId - The ID of the user who completed checkout
+ * @param stripeSessionId - The Stripe Checkout Session ID used for idempotency
+ * @returns The created (or pre-existing) Order, or null if the cart was empty
+ */
 export async function finalizeCheckout(userId: string, stripeSessionId: string) {
   const existing = await prisma.order.findUnique({
     where: { stripeSessionId },

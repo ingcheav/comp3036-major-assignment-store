@@ -3,6 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * GET /api/orders
+ * Returns all orders for the authenticated user, sorted newest-first.
+ * Includes full order line-items with product details for displaying purchase history.
+ * @returns JSON array of Order objects with nested orderItems and product data
+ */
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

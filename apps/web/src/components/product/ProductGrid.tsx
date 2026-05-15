@@ -21,6 +21,15 @@ interface Props {
   initialCategories?: Category[];
 }
 
+/**
+ * ProductGrid component — interactive product catalogue with filtering and search.
+ * Fetches products from /api/products whenever filter state changes.
+ * Supports: text search, category filter (pill buttons + dropdown), sort order (6 modes),
+ * and min/max price range filtering.
+ * Categories can be pre-fetched server-side and passed in via initialCategories
+ * to avoid a client-side waterfall on first load.
+ * @param initialCategories - Server-prefetched categories (avoids extra client fetch)
+ */
 export function ProductGrid({ initialCategories = [] }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>(initialCategories);

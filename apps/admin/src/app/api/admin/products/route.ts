@@ -3,16 +3,26 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * GET /api/admin/products
+ * Returns all products sorted by creation date (newest first).
+ * Requires ADMIN role.
+ * @returns JSON array of Product objects including their Category relation
+ */
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const products = await prisma.product.findMany({
-    include: { category: true },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const products = await prisma.product.findMany({
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
+    });
 
-  return NextResponse.json(products);
+    return NextResponse.json(products);
+  } catch {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

@@ -4,6 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
 
+/**
+ * POST /api/checkout
+ * Creates a Stripe Checkout session from the user's current cart.
+ * On success, returns a redirect URL to the Stripe-hosted checkout page.
+ * @returns JSON { url: string } with the Stripe Checkout URL
+ */
 export async function POST() {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

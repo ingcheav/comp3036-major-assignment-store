@@ -7,6 +7,14 @@ const CartContext = createContext<{
   refreshCart: () => void;
 }>({ cartCount: 0, refreshCart: () => {} });
 
+/**
+ * CartProvider — React context provider that tracks the number of items in the cart.
+ * Fetches the cart count from /api/cart whenever the session changes.
+ * Exposes cartCount (total item quantity) and refreshCart (manual refetch trigger)
+ * to any descendant component via the useCart() hook.
+ * Admin users always get a count of 0 as they cannot shop from the storefront.
+ * @param children - The component subtree that needs access to cart state
+ */
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartCount, setCartCount] = useState(0);
   const { data: session } = useSession();
@@ -35,4 +43,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * useCart hook — provides access to CartContext from any client component.
+ * @returns { cartCount, refreshCart } — current cart item count and a refetch function
+ */
 export const useCart = () => useContext(CartContext);

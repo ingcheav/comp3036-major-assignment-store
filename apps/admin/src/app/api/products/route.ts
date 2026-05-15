@@ -4,6 +4,13 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
+/**
+ * GET /api/products (admin app)
+ * Returns all products with optional filtering, search, and sorting.
+ * Used by the admin preview/catalogue view. No auth required for reads.
+ * @param req - Accepts query params: search, category, sortBy, minPrice, maxPrice
+ * @returns JSON array of Product objects including their Category relation
+ */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search") ?? "";
@@ -43,21 +50,31 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(products);
 }
 
+/**
+ * POST /api/products (admin app)
+ * Creates a new product. Requires ADMIN role.
+ * @param req - JSON body with name, description, price, stock, imageUrl, categoryId
+ * @returns The created Product object with its Category, HTTP 201 on success
+ */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { name, description, price, stock, imageUrl, categoryId } = await req.json();
-  if (!name || !price || !categoryId) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  try {
+    const { name, description, price, stock, imageUrl, categoryId } = await req.json();
+    if (!name || !price || !categoryId) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const product = await prisma.product.create({
+      data: { name, description, price: parseFloat(price), stock: parseInt(stock) || 0, imageUrl, categoryId },
+      include: { category: true },
+    });
+
+    return NextResponse.json(product, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  const product = await prisma.product.create({
-    data: { name, description, price: parseFloat(price), stock: parseInt(stock) || 0, imageUrl, categoryId },
-    include: { category: true },
-  });
-
-  return NextResponse.json(product, { status: 201 });
 }

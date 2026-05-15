@@ -4,6 +4,13 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
+/**
+ * GET /api/products
+ * Returns all products with optional filtering, search, and sorting.
+ * Public endpoint — no authentication required.
+ * @param req - Accepts query params: search, category, sortBy, minPrice, maxPrice
+ * @returns JSON array of Product objects including their Category relation
+ */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search") ?? "";
@@ -46,6 +53,12 @@ export async function GET(req: NextRequest) {
   }
 }
 
+/**
+ * POST /api/products
+ * Creates a new product. Requires ADMIN role.
+ * @param req - JSON body with name, description, price, stock, imageUrl, categoryId
+ * @returns The created Product object with its Category, HTTP 201 on success
+ */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") {

@@ -3,6 +3,13 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
+/**
+ * AdminNavbar component — sticky top navigation bar for the admin dashboard.
+ * Renders navigation pills for Dashboard, Products, Orders, and Preview Store.
+ * Highlights the active route using pathname-based comparison.
+ * Displays the logged-in admin's email and a Sign Out button.
+ * Hidden on the /login page to keep the login screen minimal.
+ */
 export function AdminNavbar() {
   const { data: session } = useSession();
   const pathname = usePathname();

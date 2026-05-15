@@ -10,6 +10,13 @@ interface Product {
   stock: number; imageUrl: string | null; category: { name: string };
 }
 
+/**
+ * ProductCard component — displays a single product in the catalogue grid.
+ * Shows the product image, category badge, name, description, and price.
+ * Includes an "Add to cart" button for logged-in non-admin users.
+ * Redirects unauthenticated users to /login when they attempt to add to cart.
+ * @param product - The product data to display
+ */
 export function ProductCard({ product }: { product: Product }) {
   const { data: session } = useSession();
   const router = useRouter();

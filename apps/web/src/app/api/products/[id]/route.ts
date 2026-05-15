@@ -3,6 +3,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * GET /api/products/[id]
+ * Returns a single product by its ID.
+ * Public endpoint — no authentication required.
+ * @param params.id - The product's unique identifier
+ * @returns The Product object including its Category, or 404 if not found
+ */
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
   try {
     const product = await prisma.product.findUnique({
@@ -16,6 +23,13 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   }
 }
 
+/**
+ * PUT /api/products/[id]
+ * Updates a product by its ID. Requires ADMIN role.
+ * @param req - JSON body with fields to update (name, description, price, stock, imageUrl, categoryId)
+ * @param params.id - The product's unique identifier
+ * @returns The updated Product object including its Category
+ */
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") {
@@ -42,6 +56,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
+/**
+ * DELETE /api/products/[id]
+ * Deletes a product by its ID. Requires ADMIN role.
+ * @param params.id - The product's unique identifier
+ * @returns JSON { success: true } on successful deletion
+ */
 export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") {

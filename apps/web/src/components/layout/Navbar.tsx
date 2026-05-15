@@ -4,6 +4,14 @@ import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 
+/**
+ * Navbar component — sticky top navigation bar for the customer storefront.
+ * Shows the ElectroMart logo, navigation links, and authentication controls.
+ * Displays a cart badge with item count for authenticated non-admin users.
+ * Includes a responsive mobile hamburger menu.
+ * Handles logout by calling the server-side /api/auth/logout endpoint
+ * before invoking NextAuth's client-side signOut.
+ */
 export function Navbar() {
   const { data: session } = useSession();
   const { cartCount } = useCart();

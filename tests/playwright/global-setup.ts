@@ -2,6 +2,12 @@ import { FullConfig } from "@playwright/test";
 import { spawn } from "child_process";
 import path from "path";
 
+/**
+ * Runs the database seed script by spawning a child process.
+ * Executes `pnpm run db:seed` in the packages/db directory.
+ * Resolves when the seed exits cleanly (code 0), rejects otherwise.
+ * @returns A Promise that resolves with the exit code on success
+ */
 async function runSeed() {
   return new Promise((resolve, reject) => {
     console.log("🌱 Running database seed...");
@@ -23,11 +29,17 @@ async function runSeed() {
   });
 }
 
+/**
+ * Playwright global setup function — runs once before all test suites.
+ * Seeds the PostgreSQL database with categories, products, users, and a test order
+ * so that all E2E tests have consistent, predictable data to work against.
+ * Exits the process with code 1 if seeding fails to prevent tests running on empty data.
+ * @param _config - Playwright full configuration (unused but required by the interface)
+ */
 async function globalSetup(_config: FullConfig) {
   console.log("🚀 Global setup starting...");
 
   try {
-    // Seed the Neon PostgreSQL database with test data
     await runSeed();
     console.log("✅ Global setup completed successfully");
   } catch (error) {
