@@ -391,8 +391,8 @@ pnpm --filter @repo/ui test
 | Vitest unit — web | `apps/web/tests/` | `pnpm test` | 2 |
 | Vitest unit — admin | `apps/admin/tests/` | `pnpm test` | 1 |
 | Playwright UI components | `packages/ui/tests/` | `pnpm test` | 15 |
-| Playwright E2E | `tests/playwright/tests/` | `pnpm test` | 106 |
-| **Total** | | | **126** |
+| Playwright E2E | `tests/playwright/tests/` | `pnpm test` | 107 |
+| **Total** | | | **127** |
 
 ---
 
@@ -462,7 +462,7 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
   4. **Purchase History** — orders page with line items, unit prices, quantities, totals, status badges
   5. **Product Filtering & Search** — search by name, filter by category, price range, sort (6 modes)
   6. **Admin Dashboard** — live stats, full product CRUD, order viewer, category management
-- **126 tests passing** — 106 Playwright E2E, 15 Playwright UI component, 5 Vitest unit
+- **127 tests passing** — 107 Playwright E2E, 15 Playwright UI component, 5 Vitest unit
 - GitHub Actions CI pipeline with PostgreSQL service container
 - Role-based access control enforced via Next.js middleware in both apps
 - Admin app with dashboard stats, product CRUD, order viewer, and category management
