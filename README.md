@@ -355,12 +355,18 @@ pnpm dev
 
 # Storefront E2E tests only
 pnpm --filter @repo/playwright test-1
+# or
+turbo test-1
 
 # Admin E2E tests only
 pnpm --filter @repo/playwright test-2
+# or
+turbo test-2
 
 # API E2E tests only
 pnpm --filter @repo/playwright test-3
+# or
+turbo test-3
 
 # Open the Playwright UI (interactive mode)
 pnpm --filter @repo/playwright ui
