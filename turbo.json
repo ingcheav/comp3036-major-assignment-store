@@ -39,6 +39,9 @@
     "test-2": {
       "cache": false
     },
+    "test-3": {
+      "cache": false
+    },
     "db:generate": {
       "dependsOn": ["^db:generate"]
     }
