@@ -1,5 +1,5 @@
 {
-  "name": "assignment-cms",
+  "name": "major-assignment-store",
   "private": true,
   "scripts": {
     "build": "turbo build",
