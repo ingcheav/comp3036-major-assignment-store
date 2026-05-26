@@ -19,22 +19,37 @@ A full-stack B2C electronics store built as the Major Assignment for **COMP3036 
 
 ---
 
+## Live Deployment
+
+| App | URL |
+|-----|-----|
+| Storefront | https://electromart-web-two.vercel.app |
+| Admin | https://electromart-admin-omega.vercel.app |
+
+**Test credentials:**
+- Customer: `user@electromart.com` / `user123`
+- Admin: `admin@electromart.com` / `admin123`
+- Stripe test card: `4242 4242 4242 4242` · Expiry: `12/34` · CVC: `123`
+
+---
+
 ## Table of Contents
 
-1. [Features](#features)
-2. [Tech Stack](#tech-stack)
-3. [Project Structure](#project-structure)
-4. [Database Schema](#database-schema)
-5. [Prerequisites](#prerequisites)
-6. [Installation](#installation)
-7. [Environment Variables](#environment-variables)
-8. [Database Setup](#database-setup)
-9. [Running Locally](#running-locally)
-10. [Running Tests](#running-tests)
-11. [CI/CD Pipeline](#cicd-pipeline)
-12. [Test Credentials](#test-credentials)
-13. [Iteration Deliverables](#iteration-deliverables)
-14. [Academic Context](#academic-context)
+1. [Live Deployment](#live-deployment)
+2. [Features](#features)
+3. [Tech Stack](#tech-stack)
+4. [Project Structure](#project-structure)
+5. [Database Schema](#database-schema)
+6. [Prerequisites](#prerequisites)
+7. [Installation](#installation)
+8. [Environment Variables](#environment-variables)
+9. [Database Setup](#database-setup)
+10. [Running Locally](#running-locally)
+11. [Running Tests](#running-tests)
+12. [CI/CD Pipeline](#cicd-pipeline)
+13. [Test Credentials](#test-credentials)
+14. [Iteration Deliverables](#iteration-deliverables)
+15. [Academic Context](#academic-context)
 
 ---
 
@@ -91,7 +106,6 @@ comp3036-major-assignment-store/
 │   │   │   │   ├── api/            # REST API routes (products, cart, orders, checkout, auth)
 │   │   │   │   ├── cart/           # Shopping cart page
 │   │   │   │   ├── checkout/       # Stripe success redirect
-│   │   │   │   ├── collections/    # Product collection pages
 │   │   │   │   ├── orders/         # Purchase history
 │   │   │   │   ├── products/[id]/  # Product detail page
 │   │   │   │   ├── login/          # Login page
@@ -480,12 +494,15 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
 - Database seeded with 13 electronics products across 5 categories, 2 users, and a test order
 - Comprehensive error handling (try/catch) on all database-touching API routes
 
-### Iteration 2 — Week 14 (Planned)
+### Iteration 2 — Week 14 (COMPLETED)
 
-- [ ] API documentation (`API.md` covering all endpoints for both apps)
-- [ ] Vercel deployment — `apps/web` and `apps/admin` as separate Vercel projects
+- [x] API documentation (`API.md` covering all endpoints for both apps)
+- [x] Vercel deployment — `apps/web` and `apps/admin` as separate Vercel projects
+  - Storefront: https://electromart-web-two.vercel.app
+  - Admin: https://electromart-admin-omega.vercel.app
+- [x] Final polish, stability improvements, and any outstanding bug fixes
+
 - [ ] Demo video (due Friday 5 June 2026)
-- [ ] Final polish, stability improvements, and any outstanding bug fixes
 
 ---
 
