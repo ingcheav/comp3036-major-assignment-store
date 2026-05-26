@@ -271,7 +271,14 @@ Copy the output and paste it as your `NEXTAUTH_SECRET` value.
 1. Install the Stripe CLI by following the official guide for your OS (Windows, macOS, Linux):
    - https://docs.stripe.com/stripe-cli/install
 
-2. Add the Stripe CLI to your PATH (Windows PowerShell example):
+2. Add the Stripe CLI to your PATH:
+
+**Mac:**
+```bash
+brew install stripe/stripe-cli/stripe
+```
+
+**Windows (PowerShell):**
 ```bash
 $env:PATH += ";C:\stripe_1.40.9_windows_x86_64"
 ```
