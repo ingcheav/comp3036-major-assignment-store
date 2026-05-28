@@ -229,28 +229,28 @@ cp packages/db/.env.example packages/db/.env
 
 ### `apps/web/.env`
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Neon PostgreSQL connection string (e.g. `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`) |
-| `NEXTAUTH_SECRET` | Random secret used to sign JWT sessions — generate with `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | Must be `http://localhost:3001` for local development |
-| `STRIPE_SECRET_KEY` | Stripe secret key from the dashboard (`sk_test_...`) |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (`pk_test_...`) — safe to expose to the browser |
-| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret from the Stripe CLI (`whsec_...`) |
+```env
+DATABASE_URL="postgresql://neondb_owner:npg_65NzTkWOpdbB@ep-proud-pine-a7s6l1vb-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+NEXTAUTH_SECRET="generate with: openssl rand -base64 32"
+NEXTAUTH_URL="http://localhost:3001"
+STRIPE_SECRET_KEY="sk_test_51TVOdaQnyJCsaeOoNepuHiqVykXN6BscHJNWxrmshHOcyeprLpHlnKfbMglFL45Tg2QtF3gvBgNlVBoHbzgmOyiV008E7fHda0"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_51TVOdaQnyJCsaeOozo0RvZLb7YVFdvy89GdaFvm68wQREMqqRZE6diiVYqnNEt1TORJJCpA6zRl1i3EkkF02Wrmy002T4uVnAL"
+STRIPE_WEBHOOK_SECRET="generate with: stripe listen --forward-to http://localhost:3001/api/checkout/webhook"
+```
 
 ### `apps/admin/.env`
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Same Neon connection string as `apps/web` |
-| `NEXTAUTH_SECRET` | Same secret as `apps/web` (or a separate one — both work) |
-| `NEXTAUTH_URL` | Must be `http://localhost:3002` for local development |
+```env
+DATABASE_URL="same as above"
+NEXTAUTH_SECRET="same as apps/web"
+NEXTAUTH_URL="http://localhost:3002"
+```
 
 ### `packages/db/.env`
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Same Neon connection string — used by `prisma db push` and `prisma db seed` |
+```env
+DATABASE_URL="same as above"
+```
 
 ### Generate a NextAuth Secret
 
@@ -260,7 +260,7 @@ openssl rand -base64 32
 ```
 
 **Windows (PowerShell):**
-```bash
+```powershell
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
@@ -279,7 +279,7 @@ brew install stripe/stripe-cli/stripe
 ```
 
 **Windows (PowerShell):**
-```bash
+```powershell
 $env:PATH += ";C:\stripe_1.40.9_windows_x86_64"
 ```
 
