@@ -56,8 +56,9 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-3" data-testid="register-form">
           {(["name", "email", "password"] as const).map((field) => (
             <div key={field}>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700 capitalize">{field}</label>
+              <label htmlFor={field} className="mb-1.5 block text-sm font-medium text-slate-700 capitalize">{field}</label>
               <input
+                id={field}
                 type={field === "password" ? "password" : field === "email" ? "email" : "text"}
                 required
                 className="input"
@@ -68,8 +69,9 @@ export default function RegisterPage() {
             </div>
           ))}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Confirm Password</label>
+            <label htmlFor="confirm-password" className="mb-1.5 block text-sm font-medium text-slate-700">Confirm Password</label>
             <input
+              id="confirm-password"
               type="password"
               required
               className="input"

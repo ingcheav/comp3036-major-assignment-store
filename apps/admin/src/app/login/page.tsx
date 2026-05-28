@@ -55,13 +55,13 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-            <input data-testid="email-input" type="email" required className="input" value={email}
+            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
+            <input id="email" data-testid="email-input" type="email" required className="input" value={email}
               onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
-            <input data-testid="password-input" type="password" required className="input" value={password}
+            <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
+            <input id="password" data-testid="password-input" type="password" required className="input" value={password}
               onChange={(e) => setPassword(e.target.value)} />
           </div>
           <button data-testid="login-btn" type="submit" disabled={loading} className="btn-primary w-full py-3">
