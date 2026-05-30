@@ -190,8 +190,8 @@ export default function AdminProductsPage() {
               {products.map((p) => (
                 <tr key={p.id} className="hover:bg-gray-50" data-testid="admin-product-row">
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-gray-500">{p.category.name}</td>
-                  <td className="px-4 py-3">${p.price.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-gray-500">{p.category?.name ?? ''}</td>
+                  <td className="px-4 py-3">${p.price?.toFixed(2) ?? '0.00'}</td>
                   <td className="px-4 py-3">{p.stock}</td>
                   <td className="px-4 py-3 flex gap-2">
                     <button onClick={() => startEdit(p)} className="text-[#1167b1] hover:underline text-xs">Edit</button>
@@ -216,11 +216,11 @@ export default function AdminProductsPage() {
               </div>
               <div className="flex items-center justify-between gap-2 mb-1">
                 <h3 className="font-semibold line-clamp-1">{p.name}</h3>
-                <span className="text-sm font-semibold text-[#1167b1]">${p.price.toFixed(2)}</span>
+                <span className="text-sm font-semibold text-[#1167b1]">${p.price?.toFixed(2) ?? '0.00'}</span>
               </div>
               <p className="text-sm text-gray-500 mb-2 line-clamp-2">{p.description || "No description"}</p>
               <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                <span>{p.category.name}</span>
+                <span>{p.category?.name ?? ''}</span>
                 <span data-testid="admin-stock-badge" className={`px-2 py-0.5 rounded-full ${p.stock > 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
                   {p.stock > 0 ? `${p.stock} in stock` : "Out of stock"}
                 </span>
