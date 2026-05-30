@@ -160,7 +160,10 @@ export default function AdminProductsPage() {
           </div>
         </div>
         {formError && (
-          <p className="text-red-500 text-sm">{formError}</p>
+          <div className="bg-red-500 text-white px-4 py-3 rounded-lg text-sm flex items-center gap-2 font-medium">
+            <span>⚠️</span>
+            <span>{formError}</span>
+          </div>
         )}
         <div className="flex gap-3 mt-4">
           <button onClick={saveProduct} disabled={saving} className="btn-primary">
