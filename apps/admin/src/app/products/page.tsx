@@ -19,6 +19,7 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [newCategoryInput, setNewCategoryInput] = useState("");
   const editFromUrlDone = useRef(false);
@@ -53,7 +54,7 @@ export default function AdminProductsPage() {
       !form.imageUrl.trim() ||
       !form.categoryId || newCatMissing
     ) {
-      alert("Please fill in all required fields");
+      setFormError("Please fill in all required fields.");
       return;
     }
     setSaving(true);
@@ -86,6 +87,7 @@ export default function AdminProductsPage() {
     setForm(empty);
     setEditId(null);
     setNewCategoryInput("");
+    setFormError("");
     setSaving(false);
   }
 
@@ -157,6 +159,9 @@ export default function AdminProductsPage() {
             )}
           </div>
         </div>
+        {formError && (
+          <p className="text-red-500 text-sm">{formError}</p>
+        )}
         <div className="flex gap-3 mt-4">
           <button onClick={saveProduct} disabled={saving} className="btn-primary">
             {saving ? "Saving…" : editId ? "Update" : "Add Product"}
