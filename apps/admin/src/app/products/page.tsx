@@ -43,6 +43,19 @@ export default function AdminProductsPage() {
   }, [products]);
 
   async function saveProduct() {
+    const effectiveCategoryId = form.categoryId === "__new__" ? "__new__" : form.categoryId;
+    const newCatMissing = effectiveCategoryId === "__new__" && !newCategoryInput.trim();
+    if (
+      !form.name.trim() ||
+      !form.description.trim() ||
+      Number(form.price) <= 0 ||
+      form.stock === "" || Number(form.stock) < 0 ||
+      !form.imageUrl.trim() ||
+      !form.categoryId || newCatMissing
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
     setSaving(true);
     let categoryId = form.categoryId;
 
@@ -107,6 +120,7 @@ export default function AdminProductsPage() {
                 className="input"
                 value={form[field]}
                 onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                required
               />
               {field === "imageUrl" && form.imageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -126,6 +140,7 @@ export default function AdminProductsPage() {
               className="input"
               value={form.categoryId}
               onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+              required
             >
               <option value="">Select category</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -137,6 +152,7 @@ export default function AdminProductsPage() {
                 placeholder="New category name"
                 value={newCategoryInput}
                 onChange={(e) => setNewCategoryInput(e.target.value)}
+                required
               />
             )}
           </div>
