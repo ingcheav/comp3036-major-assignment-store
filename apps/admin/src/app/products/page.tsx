@@ -19,6 +19,7 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [newCategoryInput, setNewCategoryInput] = useState("");
   const editFromUrlDone = useRef(false);
@@ -43,6 +44,19 @@ export default function AdminProductsPage() {
   }, [products]);
 
   async function saveProduct() {
+    const effectiveCategoryId = form.categoryId === "__new__" ? "__new__" : form.categoryId;
+    const newCatMissing = effectiveCategoryId === "__new__" && !newCategoryInput.trim();
+    if (
+      !form.name.trim() ||
+      !form.description.trim() ||
+      Number(form.price) <= 0 ||
+      form.stock === "" || Number(form.stock) < 0 ||
+      !form.imageUrl.trim() ||
+      !form.categoryId || newCatMissing
+    ) {
+      setFormError("Please fill in all required fields.");
+      return;
+    }
     setSaving(true);
     let categoryId = form.categoryId;
 
@@ -73,6 +87,7 @@ export default function AdminProductsPage() {
     setForm(empty);
     setEditId(null);
     setNewCategoryInput("");
+    setFormError("");
     setSaving(false);
   }
 
@@ -107,6 +122,7 @@ export default function AdminProductsPage() {
                 className="input"
                 value={form[field]}
                 onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                required
               />
               {field === "imageUrl" && form.imageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -126,6 +142,7 @@ export default function AdminProductsPage() {
               className="input"
               value={form.categoryId}
               onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+              required
             >
               <option value="">Select category</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -137,10 +154,17 @@ export default function AdminProductsPage() {
                 placeholder="New category name"
                 value={newCategoryInput}
                 onChange={(e) => setNewCategoryInput(e.target.value)}
+                required
               />
             )}
           </div>
         </div>
+        {formError && (
+          <div className="bg-red-500 text-white px-4 py-3 rounded-lg text-sm flex items-center gap-2 font-medium">
+            <span>⚠️</span>
+            <span>{formError}</span>
+          </div>
+        )}
         <div className="flex gap-3 mt-4">
           <button onClick={saveProduct} disabled={saving} className="btn-primary">
             {saving ? "Saving…" : editId ? "Update" : "Add Product"}
@@ -190,8 +214,8 @@ export default function AdminProductsPage() {
               {products.map((p) => (
                 <tr key={p.id} className="hover:bg-gray-50" data-testid="admin-product-row">
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-gray-500">{p.category.name}</td>
-                  <td className="px-4 py-3">${p.price.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-gray-500">{p.category?.name ?? ''}</td>
+                  <td className="px-4 py-3">${p.price?.toFixed(2) ?? '0.00'}</td>
                   <td className="px-4 py-3">{p.stock}</td>
                   <td className="px-4 py-3 flex gap-2">
                     <button onClick={() => startEdit(p)} className="text-[#1167b1] hover:underline text-xs">Edit</button>
@@ -216,11 +240,11 @@ export default function AdminProductsPage() {
               </div>
               <div className="flex items-center justify-between gap-2 mb-1">
                 <h3 className="font-semibold line-clamp-1">{p.name}</h3>
-                <span className="text-sm font-semibold text-[#1167b1]">${p.price.toFixed(2)}</span>
+                <span className="text-sm font-semibold text-[#1167b1]">${p.price?.toFixed(2) ?? '0.00'}</span>
               </div>
               <p className="text-sm text-gray-500 mb-2 line-clamp-2">{p.description || "No description"}</p>
               <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                <span>{p.category.name}</span>
+                <span>{p.category?.name ?? ''}</span>
                 <span data-testid="admin-stock-badge" className={`px-2 py-0.5 rounded-full ${p.stock > 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
                   {p.stock > 0 ? `${p.stock} in stock` : "Out of stock"}
                 </span>

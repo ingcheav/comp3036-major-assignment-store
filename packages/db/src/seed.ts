@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -60,7 +59,7 @@ export async function seed() {
     create: {
       name: "Admin",
       email: "admin@electromart.com",
-      password: await bcrypt.hash("admin123", 10),
+      password: "$2a$10$W4lu.722lp17q5QwU//iLOxTEwN.iuYyRGdc4ZtZCoCANH8FtZekC",
       role: "ADMIN",
     },
   });
@@ -71,7 +70,7 @@ export async function seed() {
     create: {
       name: "Test User",
       email: "user@electromart.com",
-      password: await bcrypt.hash("user123", 10),
+      password: "$2a$10$93FYiH1eVAxD8zA1hkMi0e197rz1GWF/t9LCo26pEu4KU6Srzm2SK",
       role: "USER",
     },
   });

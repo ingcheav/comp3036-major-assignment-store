@@ -39,13 +39,13 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
-            <input type="email" required className="input" value={email}
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">Email</label>
+            <input id="email" type="email" required className="input" value={email}
               onChange={(e) => setEmail(e.target.value)} data-testid="email-input" />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">Password</label>
-            <input type="password" required className="input" value={password}
+            <label htmlFor="password" className="mb-2 block text-sm font-medium text-slate-700">Password</label>
+            <input id="password" type="password" required className="input" value={password}
               onChange={(e) => setPassword(e.target.value)} data-testid="password-input" />
           </div>
           <button type="submit" disabled={loading} className="btn-primary w-full py-3" data-testid="login-btn">

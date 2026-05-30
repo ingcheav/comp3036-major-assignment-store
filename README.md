@@ -19,22 +19,37 @@ A full-stack B2C electronics store built as the Major Assignment for **COMP3036 
 
 ---
 
+## Live Deployment
+
+| App | URL |
+|-----|-----|
+| Storefront | https://electromart-web-two.vercel.app |
+| Admin | https://electromart-admin-omega.vercel.app |
+
+**Test credentials:**
+- Customer: `user@electromart.com` / `user123`
+- Admin: `admin@electromart.com` / `admin123`
+- Stripe test card: `4242 4242 4242 4242` · Expiry: `12/34` · CVC: `123`
+
+---
+
 ## Table of Contents
 
-1. [Features](#features)
-2. [Tech Stack](#tech-stack)
-3. [Project Structure](#project-structure)
-4. [Database Schema](#database-schema)
-5. [Prerequisites](#prerequisites)
-6. [Installation](#installation)
-7. [Environment Variables](#environment-variables)
-8. [Database Setup](#database-setup)
-9. [Running Locally](#running-locally)
-10. [Running Tests](#running-tests)
-11. [CI/CD Pipeline](#cicd-pipeline)
-12. [Test Credentials](#test-credentials)
-13. [Iteration Deliverables](#iteration-deliverables)
-14. [Academic Context](#academic-context)
+1. [Live Deployment](#live-deployment)
+2. [Features](#features)
+3. [Tech Stack](#tech-stack)
+4. [Project Structure](#project-structure)
+5. [Database Schema](#database-schema)
+6. [Prerequisites](#prerequisites)
+7. [Installation](#installation)
+8. [Environment Variables](#environment-variables)
+9. [Database Setup](#database-setup)
+10. [Running Locally](#running-locally)
+11. [Running Tests](#running-tests)
+12. [CI/CD Pipeline](#cicd-pipeline)
+13. [Test Credentials](#test-credentials)
+14. [Iteration Deliverables](#iteration-deliverables)
+15. [Academic Context](#academic-context)
 
 ---
 
@@ -91,7 +106,6 @@ comp3036-major-assignment-store/
 │   │   │   │   ├── api/            # REST API routes (products, cart, orders, checkout, auth)
 │   │   │   │   ├── cart/           # Shopping cart page
 │   │   │   │   ├── checkout/       # Stripe success redirect
-│   │   │   │   ├── collections/    # Product collection pages
 │   │   │   │   ├── orders/         # Purchase history
 │   │   │   │   ├── products/[id]/  # Product detail page
 │   │   │   │   ├── login/          # Login page
@@ -215,28 +229,28 @@ cp packages/db/.env.example packages/db/.env
 
 ### `apps/web/.env`
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Neon PostgreSQL connection string (e.g. `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`) |
-| `NEXTAUTH_SECRET` | Random secret used to sign JWT sessions — generate with `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | Must be `http://localhost:3001` for local development |
-| `STRIPE_SECRET_KEY` | Stripe secret key from the dashboard (`sk_test_...`) |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (`pk_test_...`) — safe to expose to the browser |
-| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret from the Stripe CLI (`whsec_...`) |
+```env
+DATABASE_URL="postgresql://neondb_owner:npg_65NzTkWOpdbB@ep-proud-pine-a7s6l1vb-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+NEXTAUTH_SECRET="generate with: openssl rand -base64 32"
+NEXTAUTH_URL="http://localhost:3001"
+STRIPE_SECRET_KEY="sk_test_51TVOdaQnyJCsaeOoNepuHiqVykXN6BscHJNWxrmshHOcyeprLpHlnKfbMglFL45Tg2QtF3gvBgNlVBoHbzgmOyiV008E7fHda0"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_51TVOdaQnyJCsaeOozo0RvZLb7YVFdvy89GdaFvm68wQREMqqRZE6diiVYqnNEt1TORJJCpA6zRl1i3EkkF02Wrmy002T4uVnAL"
+STRIPE_WEBHOOK_SECRET="generate with: stripe listen --forward-to http://localhost:3001/api/checkout/webhook"
+```
 
 ### `apps/admin/.env`
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Same Neon connection string as `apps/web` |
-| `NEXTAUTH_SECRET` | Same secret as `apps/web` (or a separate one — both work) |
-| `NEXTAUTH_URL` | Must be `http://localhost:3002` for local development |
+```env
+DATABASE_URL="same as above"
+NEXTAUTH_SECRET="same as apps/web"
+NEXTAUTH_URL="http://localhost:3002"
+```
 
 ### `packages/db/.env`
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Same Neon connection string — used by `prisma db push` and `prisma db seed` |
+```env
+DATABASE_URL="same as above"
+```
 
 ### Generate a NextAuth Secret
 
@@ -246,7 +260,7 @@ openssl rand -base64 32
 ```
 
 **Windows (PowerShell):**
-```bash
+```powershell
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
@@ -257,8 +271,15 @@ Copy the output and paste it as your `NEXTAUTH_SECRET` value.
 1. Install the Stripe CLI by following the official guide for your OS (Windows, macOS, Linux):
    - https://docs.stripe.com/stripe-cli/install
 
-2. Add the Stripe CLI to your PATH (Windows PowerShell example):
+2. Add the Stripe CLI to your PATH:
+
+**Mac:**
 ```bash
+brew install stripe/stripe-cli/stripe
+```
+
+**Windows (PowerShell):**
+```powershell
 $env:PATH += ";C:\stripe_1.40.9_windows_x86_64"
 ```
 
@@ -480,12 +501,15 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
 - Database seeded with 13 electronics products across 5 categories, 2 users, and a test order
 - Comprehensive error handling (try/catch) on all database-touching API routes
 
-### Iteration 2 — Week 14 (Planned)
+### Iteration 2 — Week 14 (COMPLETED)
 
-- [ ] API documentation (`API.md` covering all endpoints for both apps)
-- [ ] Vercel deployment — `apps/web` and `apps/admin` as separate Vercel projects
+- [x] API documentation (`API.md` covering all endpoints for both apps)
+- [x] Vercel deployment — `apps/web` and `apps/admin` as separate Vercel projects
+  - Storefront: https://electromart-web-two.vercel.app
+  - Admin: https://electromart-admin-omega.vercel.app
+- [x] Final polish, stability improvements, and any outstanding bug fixes
+
 - [ ] Demo video (due Friday 5 June 2026)
-- [ ] Final polish, stability improvements, and any outstanding bug fixes
 
 ---
 
