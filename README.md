@@ -509,7 +509,7 @@ These accounts are created by `pnpm --filter @repo/db db:seed`:
   - Admin: https://electromart-admin-omega.vercel.app
 - [x] Final polish, stability improvements, and any outstanding bug fixes
 
-- [ ] Demo video (due Friday 5 June 2026)
+- [x] Demo video (due Friday 5 June 2026)
 
 ---
 
