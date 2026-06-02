@@ -82,6 +82,14 @@ export default function AdminPreviewPage() {
           className="input flex-1"
         />
         <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="input sm:w-48 cursor-pointer bg-white"
+        >
+          <option value="">All Categories</option>
+          {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+        </select>
+        <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
           className="input sm:w-52 cursor-pointer bg-white"

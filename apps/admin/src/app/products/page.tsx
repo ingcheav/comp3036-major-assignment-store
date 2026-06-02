@@ -20,7 +20,7 @@ export default function AdminProductsPage() {
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
-  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [newCategoryInput, setNewCategoryInput] = useState("");
   const editFromUrlDone = useRef(false);
 
@@ -185,10 +185,10 @@ export default function AdminProductsPage() {
         <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
           <button
             data-testid="view-table-btn"
-            onClick={() => setViewMode("table")}
-            className={`px-3 py-1.5 text-sm ${viewMode === "table" ? "bg-[#1167b1] text-white" : "bg-white text-gray-700"}`}
+            onClick={() => setViewMode("list")}
+            className={`px-3 py-1.5 text-sm ${viewMode === "list" ? "bg-[#1167b1] text-white" : "bg-white text-gray-700"}`}
           >
-            Table
+            List
           </button>
           <button
             data-testid="view-grid-btn"
@@ -200,7 +200,7 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {viewMode === "table" ? (
+      {viewMode === "list" ? (
         <div className="card overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
