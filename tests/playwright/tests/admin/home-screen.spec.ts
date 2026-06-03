@@ -15,7 +15,7 @@ test("admin can access dashboard", async ({ authenticatedAsAdmin }) => {
 
   test("admin can access products from dashboard", async ({ authenticatedAsAdmin }) => {
     await authenticatedAsAdmin.goto("/");
-    const productsLink = authenticatedAsAdmin.locator("a[href='/products']");
+    const productsLink = authenticatedAsAdmin.locator("nav a[href='/products']");
     if (await productsLink.isVisible()) {
       await expect(productsLink).toBeVisible();
     }
@@ -23,7 +23,7 @@ test("admin can access dashboard", async ({ authenticatedAsAdmin }) => {
 
   test("admin can access orders from dashboard", async ({ authenticatedAsAdmin }) => {
     await authenticatedAsAdmin.goto("/");
-    const ordersLink = authenticatedAsAdmin.locator("a[href='/orders']");
+    const ordersLink = authenticatedAsAdmin.locator("nav a[href='/orders']");
     if (await ordersLink.isVisible()) {
       await expect(ordersLink).toBeVisible();
     }
