@@ -22,8 +22,8 @@ export default function AdminDashboard() {
   if (!stats) return <div className="flex justify-center py-16"><div className="animate-spin text-3xl">⚙️</div></div>;
 
   const cards = [
-    { label: "Total Products", value: stats.products, icon: "📦", href: "/products" },
-    { label: "Total Orders", value: stats.orders, icon: "🛒", href: "/orders" },
+    { label: "Total Products", value: stats.products, icon: "📦", href: "/products", linkLabel: "Manage →" },
+    { label: "Total Orders", value: stats.orders, icon: "🛒", href: "/orders", linkLabel: "View →" },
     { label: "Total Revenue", value: `$${stats.revenue.toFixed(2)}`, icon: "💰" },
     { label: "Total Users", value: stats.users, icon: "👤" },
   ];
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
             <p className="mt-1 text-sm text-slate-500">{card.label}</p>
             {card.href && (
               <Link href={card.href} className="mt-3 inline-block text-xs font-semibold uppercase tracking-[0.18em] text-[#1167b1] hover:text-[#03254c]">
-                Manage →
+                {"linkLabel" in card ? card.linkLabel : "Manage →"}
               </Link>
             )}
           </div>
